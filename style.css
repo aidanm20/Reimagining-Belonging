@@ -40,11 +40,15 @@ body {
   height: 100vh;
   z-index: 5;
   pointer-events: none;
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .6s ease, visibility 0s linear .6s;
 }
 
 .phoneOverlay.is-visible {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .6s ease;
 }
  
 
@@ -82,6 +86,19 @@ body {
   height: 90vh;
   max-width: 90vw;
   max-height: 90vh;
+}
+
+.svgContainer circle {
+  opacity: 0;
+  transition: opacity .6s ease, fill .3s ease;
+}
+
+.phoneOverlay.is-visible .svgContainer circle {
+  opacity: 1;
+}
+
+.phoneOverlay.is-dark-circle .svgContainer circle {
+  fill: #000000;
 }
 
 .slide {
@@ -155,7 +172,19 @@ body {
     background-color: transparent;
 }
 
-.slide6, .slide7 {
+.slide6 {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    width: auto;
+    background-color: transparent;
+}
+
+.hidden {
+  overflow: hidden;
+}
+
+.slide7 {
     display: flex;
     min-height: 100vh;
     justify-content: center;
@@ -167,8 +196,10 @@ body {
   min-height: 100vh;
   width: auto;
   background-color: #e5dccf;
+  color: #e5dccf;
 }
 
+ 
 
 .slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide7TextContainer, .slide10TextContainer {
     display: flex;
