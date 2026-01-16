@@ -9,7 +9,11 @@
 }
 
 body {
-    background-color: #e5dccf;
+    background-color: #333333;
+}
+
+.introHeader, .introSub {
+    color: #e5dccf;
 }
 
 .bg {
@@ -18,7 +22,7 @@ body {
   z-index: -1;
   background-size: cover;
   background-position: center;
-  background-color: black;  
+  background-color: #333333;
   opacity: 1;
   transition: opacity .3s ease;
 }
@@ -26,13 +30,28 @@ body {
 .bg.is-fading {
   opacity: 0;
 }
+ 
+.phoneOverlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
 
+.phoneOverlay.is-visible {
+  display: block;
+}
  
 
 .startButton {
-    background-color: #000000;
+    background-color: #e5dccf;
   border: none;
-  color: white;
+  color: #9f4f2e;
   width: 120px;
   height: 120px;
  
@@ -47,18 +66,42 @@ body {
   
 }
 
+.svgContainer {
+  display: flex;
+  justify-content: center;  
+  align-items: center;     
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.svgContainer svg {
+  width: 90vh;
+  height: 90vh;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
 .slide {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   width: 100%;
   position: relative;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+.slide.is-visible {
+  opacity: 1;
 }
 
 .slide1 {
     display: flex;
     min-height: 100vh;
-    background-color: #e5dccf;
+    background-color: #000000;
     justify-content: center;
     width: auto;
 }
@@ -67,6 +110,25 @@ body {
     min-height: 100vh;
     justify-content: center;
     width: auto;
+    background-color: transparent;
+    color: #333333;
+    
+}
+
+.slide2Phone {
+    background-image: url(./images/section01-scroll-1.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    height: 100vh;
+    width: auto;
+    max-width: 100vw;
+    aspect-ratio: 9 / 19.5;
 }
 
 .slide3 {
@@ -74,6 +136,7 @@ body {
     min-height: 100vh;
     justify-content: center;
     width: auto;
+    background-color: transparent;
 }
 
 .slide4 {
@@ -81,6 +144,7 @@ body {
     min-height: 100vh;
     justify-content: center;
     width: auto;
+    background-color: transparent;
 }
 
 .slide5 {
@@ -88,37 +152,58 @@ body {
     min-height: 100vh;
     justify-content: center;
     width: auto;
+    background-color: transparent;
 }
 
-.slide2TextContainer {
+.slide6, .slide7 {
     display: flex;
-    flex-direction: column;
+    min-height: 100vh;
     justify-content: center;
-    position: absolute;
-    top: 70%;
-    font-size: 22px;
-
+    width: auto;
+    background-color: transparent;
 }
 
-.slide3TextContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: absolute;
-    top: 60%;
-    font-size: 22px;
-
+.slide8, .slide9, .slide10, .slide11 {
+  min-height: 100vh;
+  width: auto;
+  background-color: #e5dccf;
 }
 
-.slide4TextContainer, .slide5TextContainer, .slide6TextContainer {
+
+.slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide7TextContainer, .slide10TextContainer {
     display: flex;
     flex-direction: column;
     
     position: absolute;
-    top: 12%;
-    left: 100px;
+    top: 50%;
+    
+    text-align: center;
     font-size: 22px;
+    z-index: 20;
+}
 
+.slide6TextContainer, .slide7TextContainer, .slide8TextContainer,.slide9TextContainer,.slide11TextContainer {
+ display: flex;
+    flex-direction: column;
+    
+    position: absolute;
+    top: 40%;
+    
+    text-align: center;
+    font-size: 22px;
+    z-index: 20;
+}
+
+.slide6BottomText,.slide8BottomText,.slide9BottomText,.slide11BottomText {
+display: flex;
+    flex-direction: column;
+    
+    position: absolute;
+    top: 55%;
+    
+    text-align: center;
+    font-size: 22px;
+    z-index: 20;
 }
 
 .brownText {
