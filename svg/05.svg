@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 720 420" style="enable-background:new 0 0 720 420;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.95;fill:#FFFFFF;enable-background:new    ;}
+	.st1{opacity:0.95;fill:none;stroke:#D0B24A;stroke-width:2.5;stroke-dasharray:6,4;enable-background:new    ;}
+	.st2{opacity:0.95;fill:none;stroke:#D0B24A;stroke-width:2.5;enable-background:new    ;}
+	.st3{fill:url(#SVGID_1_);}
+	.st4{opacity:0.3;fill:none;stroke:#000000;stroke-width:6;stroke-miterlimit:10;}
+	.st5{opacity:0.95;fill:none;stroke:#D0B24A;stroke-width:5;stroke-linejoin:round;enable-background:new    ;}
+	.st6{opacity:0.95;fill:#D0B24A;enable-background:new    ;}
+	.st7{opacity:0.95;fill:#2F5A3A;enable-background:new    ;}
+	.st8{opacity:0.95;fill:#B15A3C;enable-background:new    ;}
+	.st9{opacity:0.95;fill:#3B6EA8;enable-background:new    ;}
+	.st10{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter);}
+	.st11{mask:url(#ghostOutsideMask_00000106847192291271872500000006647424375502528939_);}
+	.st12{fill:none;stroke:#666666;stroke-width:3;stroke-linecap:round;stroke-dasharray:1,10;}
+</style>
+<circle class="st0" cx="380" cy="250" r="120"/>
+<path class="st1" d="M617.3,347.3c-22.3,22.3-50.2,38.4-80.7,46.6"/>
+<path class="st2" d="M536.6,393.9c-62.1,16.6-128.4-1.1-173.9-46.6"/>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-429.2042" y1="821.3292" x2="-428.2042" y2="820.3292" gradientTransform="matrix(240 0 0 -240 103229 197209)">
+	<stop  offset="0" style="stop-color:#000000"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<circle class="st3" cx="340" cy="210" r="120"/>
+<circle class="st4" cx="340" cy="210" r="125"/>
+<path class="st5" d="M390,260l60,60"/>
+<path class="st5" d="M407.7,242.3l67.1,52.9"/>
+<path class="st5" d="M372.3,277.7l52.9,67.1"/>
+<circle class="st6" cx="283.4" cy="153.4" r="18"/>
+<circle class="st7" cx="263.7" cy="185.9" r="14"/>
+<circle class="st8" cx="312" cy="135.1" r="10"/>
+<circle class="st9" cx="260.2" cy="215.7" r="10"/>
+<defs>
+	<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="183.1" y="53.1" width="243" height="243">
+		<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+	</filter>
+</defs>
+<mask maskUnits="userSpaceOnUse" x="183.1" y="53.1" width="243" height="243" id="ghostOutsideMask_00000106847192291271872500000006647424375502528939_">
+	<rect class="st10" width="720" height="420"/>
+	<circle cx="340" cy="210" r="118"/>
+</mask>
+<g class="st11">
+	<circle shape-rendering="crispEdges" class="st12" cx="304.6" cy="174.6" r="120"/>
+</g>
+</svg>

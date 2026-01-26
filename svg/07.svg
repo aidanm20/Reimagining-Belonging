@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 720 420" style="enable-background:new 0 0 720 420;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.95;fill:#FFFFFF;enable-background:new    ;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-width:3;stroke-linecap:round;stroke-dasharray:1,10;}
+	.st2{opacity:0.95;fill:none;stroke:#D0B24A;stroke-width:2.5;enable-background:new    ;}
+	.st3{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter);}
+	.st4{mask:url(#ghostOutsideMask_00000137099828877255538720000005523080289591980167_);}
+	.st5{fill:none;stroke:#666666;stroke-width:3;stroke-linecap:round;stroke-dasharray:1,10;}
+	.st6{fill:url(#SVGID_1_);}
+	.st7{opacity:0.3;fill:none;stroke:#000000;stroke-width:9;stroke-miterlimit:10;}
+	.st8{opacity:0.95;fill:none;stroke:#D0B24A;stroke-width:5;stroke-linejoin:round;enable-background:new    ;}
+	.st9{opacity:0.95;fill:#3B6EA8;enable-background:new    ;}
+	.st10{opacity:0.95;fill:#2F5A3A;enable-background:new    ;}
+	.st11{opacity:0.95;fill:#D0B24A;enable-background:new    ;}
+	.st12{opacity:0.95;fill:#B15A3C;enable-background:new    ;}
+</style>
+<circle class="st0" cx="380" cy="250" r="120"/>
+<circle class="st1" cx="400" cy="270" r="120"/>
+<path class="st2" d="M617.3,347.3c-70.3,70.3-184.3,70.3-254.6,0c0,0,0,0,0,0"/>
+<defs>
+	<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="161.9" y="39" width="243" height="243">
+		<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+	</filter>
+</defs>
+<mask maskUnits="userSpaceOnUse" x="161.9" y="39" width="243" height="243" id="ghostOutsideMask_00000137099828877255538720000005523080289591980167_">
+	<rect x="-7.1" y="0" class="st3" width="720" height="420"/>
+	<circle cx="332.9" cy="210" r="118"/>
+</mask>
+<g class="st4">
+	<circle shape-rendering="crispEdges" class="st5" cx="283.4" cy="160.5" r="120"/>
+</g>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-429.2042" y1="821.3292" x2="-428.2042" y2="820.3292" gradientTransform="matrix(240 0 0 -240 103229 197209)">
+	<stop  offset="0" style="stop-color:#000000"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<circle class="st6" cx="340" cy="210" r="120"/>
+<circle class="st7" cx="340" cy="210" r="128"/>
+<path class="st8" d="M390,260l60,60"/>
+<path class="st8" d="M407.7,242.3l67.1,52.9"/>
+<path class="st8" d="M372.3,277.7l52.9,67.1"/>
+<circle class="st9" cx="283.4" cy="153.4" r="18"/>
+<circle class="st10" cx="265" cy="182" r="10"/>
+<circle class="st11" cx="312" cy="135.1" r="10"/>
+<circle class="st12" cx="260" cy="207.6" r="10"/>
+</svg>
