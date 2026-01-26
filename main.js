@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const bottomTextSelector =
     ".slide6BottomText, .slide8BottomText, .slide9BottomText, .slide11BottomText";
   const topTextSelector =
-    ".slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide6TextContainer, .slide7TextContainer, .slide8TextContainer, .slide9TextContainer, .slide10TextContainer, .slide11TextContainer, .slide15TextContainer, .slide16TextContainer, .slide17TextContainer, .slide18TextContainer";
+    ".slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide6TextContainer, .slide7TextContainer, .slide8TextContainer, .slide9TextContainer, .slide10TextContainer, .slide11TextContainer, .slide15TextContainer, .slide16TextContainer, .slide17TextContainer";
 
   if (!bg || slides.length === 0) return;
  
