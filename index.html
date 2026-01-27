@@ -143,9 +143,11 @@
         </div>
         <div class="initMapText2">
             <div>Leaving a hometown for school, work, or an opportunity.</div>
-            <div style="color: #9f4f2e; font-size: 15px;" id="brownText">
-                <em><br/>“I lived and worked in the US, went to college there,<br/> graduated and worked in industry for a bit.” <br/>
-– Lexi, Gen Z</em>
+            <div style="color: #9f4f2e; font-size: 15px; color: #9f4f2e; font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-weight: 300;" id="brownText">
+                <br/>“I lived and worked in the US, went to college there,<br/> graduated and worked in industry for a bit.” <br/>
+– Lexi, Gen Z
 
             </div>
         </div>
@@ -153,14 +155,16 @@
             <div>From there, “home” starts to stretch, shaped by repeated moves across cities, borders, and cultures.</div>
         </div>
         <div class="initMapText3Quote">
-            <div style="z-index: 10000000;"><em>
+            <div style="z-index: 10000000; color: #9f4f2e; font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-weight: 300;"> 
                 “Then I moved to Australia for a <br/>
                 little under a year for work. After <br/>
                 Australia, I got my Fulbright <br/>
                 fellowship, made my way over to <br/>
                 Asia, and have been living here<br/>
                  ever since.” - Lexi
-                </em>
+              
             </div>
         </div>
         <div class="mapWrap">
@@ -353,7 +357,7 @@
             </svg>
         </div>
       </section>
-
+<!--
       <section class="slide slide21" data-bg="./images/whiteBackground.png">
         <div class="slide21TextContainer" style="z-index: 40;">
             <div>
@@ -413,9 +417,21 @@
             </svg>
         </div>
       </section>
+-->
 
-      <section class="slide slide23" data-bg="./images/whiteBackground.png">
-        <div class="slide23TextContainer" style="z-index: 40;">
+
+
+
+      <section class=" slide slide23" data-bg="./images/whiteBackground.png">
+
+        <div class="slide21TextContainer">
+            Some people place belonging in lighter spaces:<br/>
+ online relationships, content worlds…<br/>
+When material conditions cannot keep up,<br/>
+ meaning first takes shape outside physical reality.
+
+        </div>
+        <div class="slide22TextContainer">
             <div>
                 Others try to reconnect meaning to everyday life:
 <br/>
@@ -425,8 +441,18 @@
 <br/>
             </div>
         </div>
+
+        <div class="slide23TextContainer" >
+             Some shift toward collective connection.<br/>
+Belonging needs more than housing: shared spaces, low-barrier third places, and routines of collective care, <br/>
+where people can gather, return, and build meaning through practice.<br/>
+Reimagining belonging becomes something that can be tried, repeated, and built together.
+
+        </div>
         <img class="slide23Left" src="./images/23Left.png" alt="Place image" />
         <img class="slide23Right" src="./images/23Right.png" alt="Place image" />
+        <img class="img21" src="./images/21.png" alt="Place image" />
+        <img class="img22" src="./images/22.png" alt="Place image" />
         <div class="slide21Orbs" aria-hidden="true">
             <svg class="slide21Orb slide21Orb--left" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -919,10 +945,16 @@ function initMap(containerId, tooltipId) {
     center: [-98, 38.5],
     zoom: 3.5,
     pitch: 0,
-    bearing: 0
+    bearing: 0,
+    scrollZoom: false, // Disable zoom with mouse wheel
+    boxZoom: false, // Disable box zoom (shift + drag)
+    doubleClickZoom: false, // Disable double-click zoom
+    keyboard: false, // Disable keyboard shortcuts (+/- keys)
+    touchZoomRotate: false,
   });
   // ---------- LOAD + LAYERS ----------
   map.on("load", () => {
+    map.setPaintProperty('water', 'fill-color', '#e5dccf')
     Promise.all([
       fetch(FLOWS_URL).then(r => r.json()),
       fetch(STATES_GEOJSON_URL).then(r => r.json())

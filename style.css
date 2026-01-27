@@ -23,13 +23,37 @@
   background-color: #e5dccf; 
 }
 
-.slide17TextContainer, .slide18TextContainer, .slide19TextContainer, .slide20TextContainer , .slide21TextContainer , .slide22TextContainer , .slide23TextContainer, .slide26TextContainer, .slide27TextContainer {
+.slide17TextContainer, .slide18TextContainer, .slide19TextContainer, .slide20TextContainer , .slide26TextContainer, .slide27TextContainer {
   text-align: center;
   position: absolute;
   top: 18px;
   width: 100vw;
   font-size: 20px;
   
+}
+
+.slide21TextContainer {
+  text-align: center;
+  position: absolute;
+  top: 2vh;
+  width: 100vw;
+  font-size: 20px;
+}
+
+.slide22TextContainer {
+  text-align: center;
+  position: absolute;
+  top: 102vh;
+  width: 100vw;
+  font-size: 20px;
+}
+
+.slide23TextContainer {
+  text-align: center;
+  position: absolute;
+  top: 202vh;
+  width: 100vw;
+  font-size: 20px;
 }
 
  .slide24TextContainer, .slide25TextContainer {
@@ -101,7 +125,7 @@
 
 
 .slide21Orbs {
-  position: absolute;
+  position: fixed;
   left: 10vw;
   right: 10vw;
   top: calc(18px + 35vh);
@@ -145,6 +169,22 @@
   height: 20px;
   display: block;
   z-index: 4;
+}
+
+.img21 {
+  position: absolute;
+  top: 20vh;
+  left: 50%;
+  transform: translate(-50%);
+  width: 25%;
+}
+
+.img22 {
+  position: absolute;
+  top: 120vh;
+  left: 50%;
+  transform: translate(-50%);
+  width: 25%;
 }
 
  
@@ -206,6 +246,7 @@
   top: 213vh;
   width: 100vw;
   font-size: 20px;
+  
 }
 
 .slide15.is-visible .mapWrap,
@@ -353,6 +394,11 @@ body {
     display: flex;
     min-height: 100vh;
     background-color: #000000;
+    background-image: url('./images/introBack.png');
+     background-size: cover; 
+     background-position: center;
+      background-repeat: no-repeat; 
+      margin: 0;
     justify-content: center;
     width: auto;
 }
@@ -540,16 +586,16 @@ body:not(.phone-circle-visible) .slide7 .brownText {
 
 .introHeader {
     position: absolute;
-    top: 43%;
+    top: 35%;
     font-size: 40px;
-    font-weight: 550;
+    font-weight: 700;
    background-color: transparent;
  
 }
 
 .introSub {
     position: absolute;
-    top: 56%;
+    top: 52%;
     font-size: 25px;
   
 }
@@ -675,12 +721,13 @@ p {
   position: absolute;
   top: 270vh;
   left: 50px;
-
+  font-family: "Inter", sans-serif;;
   font-size: 15px;
   color: #9f4f2e;
   z-index: 20;
   pointer-events: none;
   text-align: center;
+  font-style: italic;
 }
 /* Slide 17 — Hover reveal */
 .slide17 {
@@ -1009,16 +1056,21 @@ p {
   width: 30vw;
 }
 
+.slide23 {
+  min-height: 300vh;
+  
+}
+
 .slide23Left {
   position: absolute;
-  top: 23vh;
+  top: 223vh;
   left: 10%;
   width: 25vw;
 }
 
 .slide23Right {
   position: absolute;
-  top: 23vh;
+  top: 223vh;
   left: 65%;
   width: 25vw;
 }
