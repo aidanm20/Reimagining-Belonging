@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const bottomTextSelector =
     ".slide6BottomText, .slide8BottomText, .slide9BottomText, .slide11BottomText";
   const topTextSelector =
-    ".slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide6TextContainer, .slide7TextContainer, .slide8TextContainer, .slide9TextContainer, .slide10TextContainer, .slide11TextContainer, .slide15TextContainer, .slide16TextContainer, .slide17TextContainer";
+    ".slide2TextContainer, .slide3TextContainer, .slide4TextContainer, .slide5TextContainer, .slide6TextContainer, .slide7TextContainer, .slide8TextContainer, .slide9TextContainer, .slide10TextContainer, .slide11TextContainer, .slide15TextContainer, .slide16TextContainer, .slide17TextContainer, .slide26TextContainer";
 
   if (!bg || slides.length === 0) return;
  
@@ -327,11 +327,85 @@ if (closeButtons.length > 0) {
     const closeButtonRoot = closeButtonDoc.documentElement;
     if (!closeButtonRoot) return;
     closeButtonRoot.addEventListener("click", () => {
-      const popup = btn.closest(".svg1popupContainer, .svg2popupContainer, .svg3popupContainer, .svg4popupContainer, .svg5popupContainer, .svg6popupContainer, .svg7popupContainer");
+      const popup = btn.closest(".svg1popupContainer, .svg2popupContainer, .svg3popupContainer, .svg4popupContainer, .svg5popupContainer, .svg6popupContainer, .svg7popupContainer, .popWinContainer2, .popWinContainer3, .popWinContainer4, .popWinContainer5, .popWinContainer6, .popWinContainer7, .popWinContainer1");
       if (popup)  popup.classList.add("hidden");
       
     });
   });
   });
    
+}
+
+/**
+ * Slide 25 
+ */
+
+const imgContainer = document.querySelector(".imgContainer");
+const popWin1 = document.querySelector(".popWinContainer1");
+
+if (imgContainer && popWin1) {
+  imgContainer.addEventListener("click", () => {
+    popWin1.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer2 = document.querySelector(".imgContainer2");
+const popWin2 = document.querySelector(".popWinContainer2");
+
+if (imgContainer2 && popWin2) {
+  imgContainer2.addEventListener("click", () => {
+    popWin2.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer3 = document.querySelector(".imgContainer3");
+const popWin3 = document.querySelector(".popWinContainer3");
+
+if (imgContainer3 && popWin3) {
+  imgContainer3.addEventListener("click", () => {
+    popWin3.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer4 = document.querySelector(".imgContainer4");
+const popWin4 = document.querySelector(".popWinContainer4");
+
+if (imgContainer4 && popWin4) {
+  imgContainer4.addEventListener("click", () => {
+    popWin4.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer5 = document.querySelector(".imgContainer5");
+const popWin5 = document.querySelector(".popWinContainer5");
+
+if (imgContainer5 && popWin5) {
+  imgContainer5.addEventListener("click", () => {
+    popWin5.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer6 = document.querySelector(".imgContainer6");
+const popWin6 = document.querySelector(".popWinContainer6");
+
+if (imgContainer6 && popWin6) {
+  imgContainer6.addEventListener("click", () => {
+    popWin6.classList.remove("hidden");
+    console.log("hi")
+  });
+}
+
+const imgContainer7 = document.querySelector(".imgContainer7");
+const popWin7 = document.querySelector(".popWinContainer7");
+
+if (imgContainer7 && popWin7) {
+  imgContainer7.addEventListener("click", () => {
+    popWin7.classList.remove("hidden");
+    console.log("hi")
+  });
 }
