@@ -209,3 +209,129 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+/**
+ * slide24SVGs
+ */
+const svg241 = document.getElementById("slide24SVG1");
+const popup1 = document.querySelector(".svg1popupContainer");
+
+if (svg241 && popup1) {
+  svg241.addEventListener("load", () => {
+    const svgDoc = svg241.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup1.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg242 = document.getElementById("slide24SVG2");
+const popup2 = document.querySelector(".svg2popupContainer");
+
+if (svg242 && popup1) {
+  svg242.addEventListener("load", () => {
+    const svgDoc = svg242.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup2.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg243 = document.getElementById("slide24SVG3");
+const popup3 = document.querySelector(".svg3popupContainer");
+
+if (svg243 && popup1) {
+  svg243.addEventListener("load", () => {
+    const svgDoc = svg243.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup3.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg244 = document.getElementById("slide24SVG4");
+const popup4 = document.querySelector(".svg4popupContainer");
+
+if (svg244 && popup1) {
+  svg244.addEventListener("load", () => {
+    const svgDoc = svg244.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup4.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg245 = document.getElementById("slide24SVG5");
+const popup5 = document.querySelector(".svg5popupContainer");
+
+if (svg245 && popup1) {
+  svg245.addEventListener("load", () => {
+    const svgDoc = svg245.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup5.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg246 = document.getElementById("slide24SVG6");
+const popup6 = document.querySelector(".svg6popupContainer");
+
+if (svg246 && popup1) {
+  svg246.addEventListener("load", () => {
+    const svgDoc = svg246.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup6.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const svg247 = document.getElementById("slide24SVG7");
+const popup7 = document.querySelector(".svg7popupContainer");
+
+if (svg247 && popup1) {
+  svg247.addEventListener("load", () => {
+    const svgDoc = svg247.contentDocument;
+    const svgRoot = svgDoc.documentElement;
+    if (!svgRoot) return;
+    svgRoot.addEventListener("click", () => {
+      popup7.classList.remove("hidden");
+      console.log("hi")
+    });
+  });
+}
+
+const closeButtons = document.querySelectorAll('.closeButton');
+ 
+if (closeButtons.length > 0) {
+  closeButtons.forEach((btn) => {
+    btn.addEventListener("load", () => {
+    const closeButtonDoc = btn.contentDocument;
+    const closeButtonRoot = closeButtonDoc.documentElement;
+    if (!closeButtonRoot) return;
+    closeButtonRoot.addEventListener("click", () => {
+      const popup = btn.closest(".svg1popupContainer, .svg2popupContainer, .svg3popupContainer, .svg4popupContainer, .svg5popupContainer, .svg6popupContainer, .svg7popupContainer");
+      if (popup)  popup.classList.add("hidden");
+      
+    });
+  });
+  });
+   
+}
