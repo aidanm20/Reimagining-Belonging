@@ -295,10 +295,34 @@
   visibility: visible;
 }
 
+.slide16.map-fade .mapWrap {
+  opacity: 0;
+  pointer-events: none;
+}
+
 body {
     background-color: #333333;
 }
 
+body.popup-open {
+  overflow: hidden;
+}
+
+body.popup-open::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 90;
+}
+
+body.force-scroll {
+  overflow: auto !important;
+}
+
+body.force-scroll.popup-open::before {
+  display: none;
+}
 .introHeader, .introSub {
     color: #e5dccf;
 }
@@ -335,6 +359,17 @@ body {
 
 .bg--back {
   z-index: -2;
+}
+
+.slide7BgOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("./images/whiteBackground.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  pointer-events: none;
 }
  
 .phoneOverlay {
@@ -529,7 +564,7 @@ body {
 
 .slide6 {
     display: flex;
-    min-height: 100vh;
+    min-height: 200vh;
     justify-content: center;
     width: auto;
     background-color: transparent;
@@ -547,6 +582,15 @@ body {
     justify-content: center;
     width: auto;
     background-color: transparent;
+}
+
+.slide6Stage7 {
+  position: absolute;
+  top: 100vh;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
 }
 
 .slide8, .slide9, .slide10, .slide11, .slide13, .slide14, .slide15, .slide16, .slide17{
@@ -582,6 +626,18 @@ body {
     z-index: 20;
 }
 
+.slide6 .slide6TextContainer {
+  top: 40vh;
+}
+
+.slide6 .slide6BottomText {
+  top: 55vh;
+}
+
+.slide6 .slide7TextContainer {
+  top: calc(100vh + 40vh);
+}
+
 .slide6BottomText,.slide8BottomText,.slide9BottomText,.slide11BottomText {
 display: flex;
     flex-direction: column;
@@ -592,6 +648,8 @@ display: flex;
     text-align: center;
     font-size: 22px;
     z-index: 20;
+    transform-origin: center center;
+    will-change: transform, opacity;
 }
 
 .slide2TextContainer,
@@ -632,6 +690,59 @@ body.phone-circle-visible .slide.text-visible .slide11BottomText {
   opacity: 1;
   visibility: visible;
   transition: opacity .2s ease, visibility 0s linear 0s;
+}
+
+body.phone-circle-visible .slide.text-visible .slide7TextContainer {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.slide7-active.phone-circle-visible .slide7TextContainer {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .2s ease, visibility 0s linear 0s;
+}
+
+body.slide6-zoom-active.phone-circle-visible .slide.text-visible .slide7TextContainer {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.slide6-zoom-active .slide6BottomText {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.slide8-active .slide7TextContainer,
+body.slide8-active .slide6BottomText {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.slide7-active.slide7-fadeout.phone-circle-visible .slide7TextContainer,
+body.slide7-fadeout.phone-circle-visible .slide.text-visible .slide6TextContainer,
+body.slide7-fadeout.phone-circle-visible .slide.text-visible .slide6BottomText,
+body.slide7-fadeout .slide6TextContainer,
+body.slide7-fadeout .slide6BottomText {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.slide7-fadeout .phoneOverlay {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.slide7-fadeout .slide7BgOverlay {
+  transition: opacity 0.5s ease;
+  opacity: 1;
+}
+
+body.slide7-fadeout .phoneOverlay,
+body.slide7-fadeout .slide6TextContainer,
+body.slide7-fadeout .slide6BottomText,
+body.slide7-fadeout .slide7TextContainer {
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
 }
 
 .slide.text-visible .slide15TextContainer,
@@ -1201,12 +1312,28 @@ p {
 }
 
 .slide24SVGContainer object {
-opacity: 1;
-  transition: opacity .5s ease;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .5s ease, visibility 0s linear .5s;
 }
 
-.slide24SVGContainer object:hover {
+body.slide24-active .slide24SVGContainer object {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .5s ease, visibility 0s linear 0s;
+}
+
+body.slide24-active .slide24SVGContainer object:hover {
   opacity: .7;
+}
+
+body.slide25-active .slide24SVGContainer object {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .5s ease, visibility 0s linear .5s;
 }
 
 .hidden {
@@ -1221,14 +1348,23 @@ opacity: 1;
   filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
   z-index: 100;
   overflow: auto;
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 90vh;
  
 }
 
 .closeButton {
-  position: absolute;
-  right: 2%;
-  top: 2%;
+  position: sticky;
+  top: 16px;
+  margin-left: auto;
+  margin-right: 16px;
+  width: 28px;
+  height: 28px;
+  display: block;
+  z-index: 2;
 }
 
 .popupHeader {
@@ -1296,11 +1432,11 @@ opacity: 1;
 }
 
 .slide25 .imgContainer {
-  position: absolute;
-  top: 2vh;
-  left: 40%;
+  position: fixed;
+  top: 5vh;
+  left: 26vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
@@ -1308,68 +1444,94 @@ opacity: 1;
 }
 
 .slide25 .imgContainer2 {
-  position: absolute;
-  top: 2vh;
-  left: 60%;
+  position: fixed;
+  top: 5vh;
+  left: 41vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
 }
 
 .slide25 .imgContainer3 {
-  position: absolute;
-  top: 30vh;
-  left: 50%;
+  position: fixed;
+  top: 35vh;
+  left: 40vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
 }
 
 .slide25 .imgContainer4 {
-  position: absolute;
-  top: 33vh;
-  left: 70%;
+  position: fixed;
+  top: 35vh;
+  left: 54vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
 }
 .slide25 .imgContainer5 {
-  position: absolute;
-  top: 66vh;
-  left: 55%;
+  position: fixed;
+  top: 35vh;
+  left: 68vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
 }
 
 .slide25 .imgContainer6 {
-  position: absolute;
-  top: 66vh;
-  left: 72.5%;
+  position: fixed;
+  top: 64vh;
+  left: 53vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
 }
 
 .slide25 .imgContainer7 {
-  position: absolute;
-  top: 66vh;
-  left: 90%;
+  position: fixed;
+  top: 64vh;
+  left: 67vw;
   transform: translateX(-50%);
-  width: min(40vw, 240px);
+  width: min(40vw, 210px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+}
+
+.slide25 .imgContainer,
+.slide25 .imgContainer2,
+.slide25 .imgContainer3,
+.slide25 .imgContainer4,
+.slide25 .imgContainer5,
+.slide25 .imgContainer6,
+.slide25 .imgContainer7 {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .5s ease, visibility 0s linear .5s;
+}
+
+body.slide25-active .slide25 .imgContainer,
+body.slide25-active .slide25 .imgContainer2,
+body.slide25-active .slide25 .imgContainer3,
+body.slide25-active .slide25 .imgContainer4,
+body.slide25-active .slide25 .imgContainer5,
+body.slide25-active .slide25 .imgContainer6,
+body.slide25-active .slide25 .imgContainer7 {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .5s ease, visibility 0s linear 0s;
 }
 
 .slide25 .imgContainer img,
@@ -1393,11 +1555,14 @@ opacity: 1;
   width: 75vw;
   height: 75vh;
   border-radius: 30px;
-  margin-top: 40px;
   filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
   z-index: 100;
   overflow: auto;
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 90vh;
   --popwin-image-width: min(40vw, 1200px);
  
 }

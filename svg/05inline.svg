@@ -15,7 +15,13 @@
 	.st9{opacity:0.95;fill:#3B6EA8;enable-background:new    ;}
 	.st10{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter);}
 	.st11{mask:url(#ghostOutsideMask_00000106847192291271872500000006647424375502528939_);}
-	.st12{fill:none;stroke:#666666;stroke-width:3;stroke-linecap:round;stroke-dasharray:1,10;}
+	.st12{fill:none;stroke:#666666;stroke-width:3;stroke-linecap:round;stroke-dasharray:1,10;animation:rotateCircle 20s linear infinite;transform-box:fill-box;transform-origin:center;}
+
+	@keyframes rotateCircle {
+		to {
+			transform: rotate(360deg);
+		}
+	}
 </style>
 <circle class="st0" cx="380" cy="250" r="120"/>
 <path class="st1" d="M617.3,347.3c-22.3,22.3-50.2,38.4-80.7,46.6"/>
