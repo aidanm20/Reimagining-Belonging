@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://Vercel-Admin-iconStorage:firefly302@iconstorage.klbcgs0.mongodb.net/";
+require('dotenv').config();
+const uri = process.env.DB_URI;
 const client = new MongoClient(uri);
 
 try {

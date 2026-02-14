@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/aidanm20/Scrolling-Website-Demo#readme",
   "dependencies": {
+    "dotenv": "^17.3.1",
     "mongodb": "^7.1.0"
   }
 }
