@@ -1338,9 +1338,7 @@ body.slide25-active .slide24SVGContainer object {
   transition: opacity .5s ease, visibility 0s linear .5s;
 }
 
-.hidden {
-  display: none;
-}
+ 
 
 .svg1popupContainer, .svg2popupContainer, .svg3popupContainer , .svg4popupContainer , .svg5popupContainer , .svg6popupContainer , .svg7popupContainer  {
   background-color: #f4f1ecff;
@@ -1720,3 +1718,160 @@ body.slide25-active .slide25 .imgContainer7 {
   height: 30px;
 }
 
+.location {
+  position: fixed;
+  top:68vh;
+  left: 42vw;
+  text-align: center;
+  z-index: 100;
+  color: #969393;
+  
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-weight: 200;
+  
+}
+
+.initMapGraphic {
+  position: fixed;
+  top: 48vh;
+  left: 50%;
+  width: min(42vw, 520px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.initNode {
+  --node-size: min(11vw, 140px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--node-size);
+  height: var(--node-size);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.65);
+  opacity: 0;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 34%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(135deg, #4f4f4f 0%, #2a2a2a 58%, rgba(0, 0, 0, 0) 100%);
+  transition:
+    left 0.85s cubic-bezier(.22, .61, .36, 1),
+    top 0.85s cubic-bezier(.22, .61, .36, 1),
+    opacity 0.55s ease,
+    transform 0.85s cubic-bezier(.22, .61, .36, 1);
+}
+
+.initMapConnectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.initMapConnectors ellipse,
+.initMapConnectors path {
+  fill: none;
+  stroke: #c4a448;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 2.6 2.6;
+}
+
+.mapSlides.init-stage-0 .initNode--1 {
+  left: 50%;
+  top: 52%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-1 .initNode--1 {
+  left: 35%;
+  top: 52%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-1 .initNode--2 {
+  left: 65%;
+  top: 52%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-1 .initMapConnectors--ring {
+  opacity: 1;
+}
+
+.mapSlides.init-stage-2 .initNode--1 {
+  left: 28%;
+  top: 62%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-2 .initNode--2 {
+  left: 72%;
+  top: 62%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-2 .initNode--3 {
+  left: 50%;
+  top: 24%;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mapSlides.init-stage-2 .initMapConnectors--arcs {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .initMapGraphic {
+    width: min(66vw, 380px);
+    top: 46vh;
+  }
+
+  .initNode {
+    --node-size: min(17vw, 110px);
+  }
+
+  .location {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 57vh;
+  }
+}
+
+.mapCircles{
+  position: fixed;
+  top: 60vh;
+  left: 45vw;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.mapCircles svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+ 
+
+.circleWrap {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+}
+
+.circleWrap svg {
+  width: 100%;
+  height: 100%;
+}

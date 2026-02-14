@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reimagining Belonging — Make Your Icon</title>
+  <link rel="stylesheet" href="icon.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>Make your Belonging Icon</h1>
+      <p class="intro">Answer a few questions to generate one icon. Download it or share a link.</p>
+      <p class="intro"><em>No personal information is collected. The share link stores only icon settings.</em></p>
+
+      <div class="q-inline">
+        <label>In the past 3 years, how often has your home base changed?</label>
+        <select id="moveCount">
+          <option value="">Choose one...</option>
+          <option value="F1">Rarely (0–1 move)</option>
+          <option value="F2">A few times (2–3 moves)</option>
+          <option value="F3">Often (4+ moves)</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>What's the farthest scale you moved for a home base change?</label>
+        <select id="scaleMax">
+          <option value="">Choose one...</option>
+          <option value="S1">Within the same city</option>
+          <option value="S2">To another city</option>
+          <option value="S3">To another state / province</option>
+          <option value="S4">To another country</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>How stable does your living situation feel right now?</label>
+        <select id="stability">
+          <option value="">Choose one...</option>
+          <option value="low">Hard to plan</option>
+          <option value="med">Mixed</option>
+          <option value="high">Stable</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>How much control do you feel over where and how you live?</label>
+        <select id="control">
+          <option value="">Choose one...</option>
+          <option value="none">Low</option>
+          <option value="weak">Partial</option>
+          <option value="strong">Strong</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>When a place doesn't fit you, what do you usually do?</label>
+        <select id="tr">
+          <option value="">Choose one...</option>
+          <option value="T1">Adjust expectations</option>
+          <option value="T2">Small adjustments</option>
+          <option value="T3">Speak up / direct change</option>
+          <option value="T4">Make a system (routines, rules)</option>
+          <option value="T5">Co-create with others</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>How much do you engage beyond your immediate self / household?</label>
+        <select id="externalArc">
+          <option value="">Choose one...</option>
+          <option value="none">Mostly inward</option>
+          <option value="subtle">Occasional</option>
+          <option value="moderate">Regular</option>
+          <option value="strong">Sustained / strongly outward</option>
+        </select>
+      </div>
+
+      <div class="q-inline">
+        <label>In social situations, do you prefer selective circles or staying open?</label>
+        <select id="whiteOrbit">
+          <option value="">Choose one...</option>
+          <option value="selective">Selective</option>
+          <option value="mixed">Mixed</option>
+          <option value="open">Open</option>
+        </select>
+      </div>
+
+      <div class="q">
+        <label>What anchors your sense of belonging? Rate each (0–3). 0 = not important, 3 = very important</label>
+        <div id="anchors">
+          <div class="rating-row">
+            <span class="rating-label">Place — location / neighborhood / nature</span>
+            <label><input type="radio" name="place" value="0" checked> 0</label>
+            <label><input type="radio" name="place" value="1"> 1</label>
+            <label><input type="radio" name="place" value="2"> 2</label>
+            <label><input type="radio" name="place" value="3"> 3</label>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Object — things / rituals / routines</span>
+            <label><input type="radio" name="object" value="0" checked> 0</label>
+            <label><input type="radio" name="object" value="1"> 1</label>
+            <label><input type="radio" name="object" value="2"> 2</label>
+            <label><input type="radio" name="object" value="3"> 3</label>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Person — relationships / chosen family</span>
+            <label><input type="radio" name="person" value="0" checked> 0</label>
+            <label><input type="radio" name="person" value="1"> 1</label>
+            <label><input type="radio" name="person" value="2"> 2</label>
+            <label><input type="radio" name="person" value="3"> 3</label>
+          </div>
+          <div class="rating-row">
+            <span class="rating-label">Language — words / culture / identity</span>
+            <label><input type="radio" name="lang" value="0" checked> 0</label>
+            <label><input type="radio" name="lang" value="1"> 1</label>
+            <label><input type="radio" name="lang" value="2"> 2</label>
+            <label><input type="radio" name="lang" value="3"> 3</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-inline">
+        <label>Optional: share my responses (default OFF)</label>
+        <label class="chip">
+          <input type="checkbox" id="optIn" />
+          Opt-in submission (later)
+        </label>
+      </div>
+      <div class="help">By default, no data will be submitted. Even if you check the box, it's currently just a demonstration: the payload will be printed to the console.</div>
+
+      <div class="footer">
+        <button class="primary" id="downloadSvg">Download SVG</button>
+        <button id="downloadPng">Download PNG</button>
+        <button id="copyLink">Copy Share Link</button>
+        <button id="submit" title="only if opt-in is on">Submit (opt-in)</button>
+      </div>
+
+      <div class="tiny">Share link will write parameters into the URL (no personal information).</div>
+      <input class="link" id="shareUrl" readonly />
+    </div>
+
+    <div class="panel preview">
+      <div id="mount"></div>
+    </div>
+  </div>
+  <script src="icon.js"></script>
+</body>
+</html>

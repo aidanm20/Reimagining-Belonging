@@ -988,3 +988,5 @@ if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGr
       .to(solidDown, { rotation: 15, transformOrigin: "center center", ease: "none" }, 0);
   }
 }
+
+ 

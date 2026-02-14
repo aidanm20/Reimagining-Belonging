@@ -152,6 +152,31 @@
         <div class="initMapText1">
             <div>For many Gen Z, mobility starts with a first departure.</div>
         </div>
+        <div class="location"> </div>
+        <div class="mapCircles hidden" aria-hidden="true">
+             <svg width="0" height="0" style="position:absolute"> 
+            <defs>
+            <linearGradient id="Gradient3" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="50%" stop-color="#333333" />
+                <stop offset="100%" stop-color="transparent" />
+            </linearGradient>
+            </defs>
+            </svg>
+                <div class="circleWrap wrap1">
+                <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="url(#Gradient3)" />
+                </svg>
+            </div>
+
+            <div class="circleWrap wrap2">
+                <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="30" fill="url(#Gradient3)" />
+                </svg>
+            </div>
+            
+        </div>
+
+
         <div class="initMapText2">
             <div>Leaving a hometown for school, work, or an opportunity.</div>
             <div style="color: #9f4f2e; font-size: 15px; color: #9f4f2e; font-family: 'Inter', sans-serif;
@@ -818,7 +843,7 @@ time I went home, I felt a bit sad.”
                     <div class="finalSvgTrack"></div>
                 </div>
             </div>
-            <button class="makeIconButton">Make my icon</button>
+            <button class="makeIconButton" onclick=" window.open('icon.html','_blank')">Make my icon</button>
 
 
             <div class="slide28BottomText">
@@ -1111,7 +1136,7 @@ const initialMap = new mapboxgl.Map({
     doubleClickZoom: false, // Disable double-click zoom
     keyboard: false, // Disable keyboard shortcuts (+/- keys)
     touchZoomRotate: false,
-     
+     interactive: false,
   pitch: 0,
   bearing: 0
 });
@@ -1150,6 +1175,7 @@ initialMap.on('load', () => {
   initialMap.setLayoutProperty('place-city-sm', 'visibility', 'none');
  
   // Example to hide all symbol layers (which often include most labels)
+  
   initialMap.getStyle().layers.forEach((layer) => {
     if (layer.type === 'symbol' && layer.layout.hasOwnProperty('text-field')) {
       initialMap.setLayoutProperty(layer.id, 'visibility', 'none');
@@ -1157,21 +1183,103 @@ initialMap.on('load', () => {
   });
 });
 
+let circleStage = -1;
+let circleTl = null;
+
+/**
+ * Animates the init-map circles using transforms:
+ * - moves the whole container with x/y (instead of left/top)
+ * - moves each circle independently by moving its wrapper (.wrapA / .wrapB)
+ *
+ * Expected DOM:
+ * <div class="mapCircles">
+ *   <div class="circleWrap wrapA"><svg>...</svg></div>
+ *   <div class="circleWrap wrapB"><svg>...</svg></div>
+ * </div>
+ */
+function animateInitCircles(stage) {
+  if (stage === circleStage) return;
+  circleStage = stage;
+
+  const wrap = document.querySelector(".mapCircles");
+  const wrapA = document.querySelector(".mapCircles .wrap1");
+const wrapB = document.querySelector(".mapCircles .wrap2");
+const a = document.querySelector(".mapCircles .wrap1 circle");
+const b = document.querySelector(".mapCircles .wrap2 circle");
+
+
+  if (!wrap || !wrapA || !wrapB || !a || !b) return;
+
+  if (circleTl) circleTl.kill();
+
+  // Make sure transforms behave consistently
+  gsap.set([wrap, wrapA, wrapB], { transformOrigin: "50% 50%" });
+  gsap.set([a, b], { transformOrigin: "50% 50%" });
+
+  circleTl = gsap.timeline({ defaults: { ease: "power3.inOut" } });
+
+  // Stage 0: one circle centered, second hidden
+  if (stage === 0) {
+    circleTl
+      // move whole system (relative to its base CSS position)
+      .to(wrap, { x: 0, y: 0, width: 110, height: 110, duration: 0.9 }, 0)
+
+      // put circle A in the middle of the container
+      .to(wrapA, { x: 0, y: 0, duration: 0.9 }, 0)
+      .to(a, { attr: { r: 40 }, duration: 0.9 }, 0)
+
+      // hide circle B
+      .to(wrapB, { x: 0, y: 0, duration: 0.9 }, 0)
+      .to(b, { attr: { r: 40 }, duration: 0.9 }, 0)
+      .to(wrapB, { opacity: 0, scale: 0.6, duration: 0.5, ease: "power2.out" }, 0);
+  }
+
+  // Stage 1: show 2 circles, each in different positions
+  if (stage === 1) {
+    circleTl
+      // shift & resize the whole system (relative move)
+      .to(wrap, { x: 80, y: -40, width: 140, height: 140, duration: 0.9 }, 0)
+
+      // circle A: move wrapper + resize circle
+      .to(wrapA, { x: "-22.5vw", y: "-4vh", duration: 0.9 }, 0)
+      .to(a, { attr: { r: 15 }, duration: 0.9 }, 0)
+
+      // circle B: reveal + move wrapper + resize circle
+      .fromTo(
+        wrapB,
+        { opacity: 0, scale: 0.6 },
+        { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" },
+        0.15
+      )
+      .to(wrapB, { x: "20vw", y: "20vh", duration: 0.9 }, 0)
+      .to(b, { attr: { r: 15 }, duration: 0.9 }, 0);
+  }
+}
+
+
 function updateInitialMapOnScroll() {
   if (!initialMapStartView) return;
   const stage1Threshold = initialMapTriggerTop + window.innerHeight;
   const stage2Threshold = initialMapTriggerTop + window.innerHeight * 2 - 80    ;
 
   let nextStage = 0;
+  /*
+
+
+
+
+
+  */
   if (window.scrollY >= stage2Threshold) {
     nextStage = 2;
+     
   } else if (window.scrollY >= stage1Threshold) {
     nextStage = 1;
   }
 
   if (nextStage === initialMapStage) return;
   initialMapStage = nextStage;
-
+  animateInitCircles(nextStage);
   const targetView =
     nextStage === 2
       ? initialMapViews.stage2
@@ -1186,7 +1294,7 @@ function updateInitialMapOnScroll() {
     zoom: targetView ? targetView.zoom : initialMapStartView.zoom,
     bearing: initialMapStartView.bearing,
     pitch: initialMapStartView.pitch,
-    duration: 1200,
+    duration: 2400,
     essential: true
   });
 }

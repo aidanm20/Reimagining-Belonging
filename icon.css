@@ -1,0 +1,29 @@
+@import url('https://rsms.me/inter/inter.css');
+
+:root { --bg:#f2efe7; --ink:#111; --panel:#ffffffcc; --stroke:#111; }
+    body { margin:0; font-family: 'Inter', -apple-system, system-ui, sans-serif; font-weight:300; background:var(--bg); color:#111; height:100vh; overflow:hidden; }
+    .wrap { display:grid; grid-template-columns: 730px 1fr; gap:20px; padding:20px; max-width:1780px; margin:0; margin-left:40px; }
+    .panel { background:var(--panel); backdrop-filter: blur(6px); border:1px solid #00000012; border-radius:14px; padding:16px; }
+    .wrap > .panel:first-child { overflow-y: auto; max-height: 100vh; }
+    h1 { font-size:18px; margin:0 0 10px; }
+    .intro { font-size:13px; opacity:.85; margin:8px 0; line-height:1.4; }
+    .q { margin:12px 0; }
+    .q label { display:block; font-size:14px; font-weight:500; opacity:.85; margin-bottom:6px; }
+    .q-inline { display:flex; align-items:center; justify-content:space-between; margin:8px 0; }
+    .q-inline label { display:inline; font-size:13px; font-weight:500; opacity:.85; margin-bottom:0; flex:1; }
+    .q-inline select, .q-inline .chip { width:220px; flex-shrink:0; box-sizing:border-box; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; }
+    select, button { font-size:14px; padding:9px 12px; border-radius:10px; border:1px solid #00000020; background:#fff; box-sizing:border-box; }
+    button { cursor:pointer; }
+    button.primary { background:#111; color:#fff; border-color:#111; }
+    .chk { display:flex; gap:10px; flex-wrap:wrap; }
+    .chip { display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:999px; border:1px solid #00000020; background:#fff; font-size:14px; }
+    .chip input { transform: translateY(1px); }
+    .rating-row { display:flex; align-items:center; justify-content:space-between; padding:4px 0; font-size:13px; }
+    .rating-row .rating-label { flex:1; }
+    .rating-row > label { margin-left:auto; }
+    .preview { display:flex; align-items:center; justify-content:center; min-height:360px; background:transparent; backdrop-filter:none; border:none; }
+    .help { font-size:12px; opacity:.75; line-height:1.3; margin-top:6px; }
+    .footer { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .tiny { font-size:11px; opacity:.7; margin-top:6px; }
+    .link { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:11px; background:#fff; border:1px solid #00000020; padding:8px 10px; border-radius:10px; width:100%; box-sizing:border-box; }
