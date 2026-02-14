@@ -1678,6 +1678,13 @@ body.slide25-active .slide25 .imgContainer7 {
   animation-direction: reverse;
 }
 
+.finalSvgIcon svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
 .finalSvgIcon {
   height: 200px;
   width: auto;

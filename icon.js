@@ -1,17 +1,24 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
-const uri = process.env.DB_URI;
-const client = new MongoClient(uri);
+async function submitIcon({ svg, answers, params }) {
+  const res = await fetch("/api/icons", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      svg,
+      answers,
+      params,
+      version: "v4-icon-rules-2026-01-04",
+      ts: new Date().toISOString()
+    })
+  });
 
-try {
-        // 2. Connect to the cluster
-        await client.connect();
-        console.log("Connected to Cluster");
-} catch (err) {
-  console.error(err)
-} finally {
-  await client.close()
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to submit icon");
+  }
+
+  return res.json(); // { id: ... }
 }
+
 
 /* -------------------------
    1) Utility: seeded random
@@ -724,12 +731,29 @@ function attach(){
     await navigator.clipboard.writeText(v);
   });
 
-  document.getElementById('submit').addEventListener('click', ()=>{
+  document.getElementById('submit').addEventListener('click', async ()=>{
     const optIn = document.getElementById('optIn').checked;
     if (!optIn){
        
       return;
     }
+
+    try {
+    const result = await submitIcon({
+      svg: current.svgText,
+      answers: current.answers,
+      params: current.params
+    });
+    console.log("Saved!", result);
+
+    // optional UI feedback:
+    // alert("Submitted — thank you!");
+  } catch (e) {
+    console.error(e);
+    // optional UI feedback:
+    // alert(e.message);
+  }
+
     // 目前：只演示 payload（以后接你的 endpoint）
     const payload = {
       ts: new Date().toISOString(),
