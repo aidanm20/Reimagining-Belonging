@@ -463,62 +463,47 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const svgMarquee = document.querySelector(".finalSvgMarquee");
-if (svgMarquee) {
-  // Fetch latest submitted icons from your API
-  async function fetchIcons() {
-    const res = await fetch("/api/icons?limit=40"); // you decide limit
-    if (!res.ok) return [];
-    const data = await res.json();
-    // Expecting: { icons: [{ svg: "<svg ...>...</svg>" }, ...] }
-    return Array.isArray(data.icons) ? data.icons : [];
-  }
+  if (svgMarquee) {
+    const svgSources = Array.from({ length: 7 }, (_, i) => {
+      const index = String(i + 1).padStart(2, "0");
+      return `./svg/${index}inline.svg`;
+    });
 
-  const buildRow = (row, icons) => {
-    const track = row.querySelector(".finalSvgTrack");
-    if (!track) return;
-    track.innerHTML = "";
+    const buildRow = (row) => {
+      const track = row.querySelector(".finalSvgTrack");
+      if (!track) return;
+      track.innerHTML = "";
 
-    const rowWidth = row.getBoundingClientRect().width || window.innerWidth;
-    const minItems = Math.max(10, Math.ceil(rowWidth / 180) + 6);
+      const rowWidth = row.getBoundingClientRect().width || window.innerWidth;
+      const minItems = Math.max(10, Math.ceil(rowWidth / 180) + 6);
+      const created = [];
 
-    if (!icons.length) return;
+      for (let i = 0; i < minItems; i += 1) {
+        const img = document.createElement("img");
+        img.className = "finalSvgIcon";
+        img.src = svgSources[Math.floor(Math.random() * svgSources.length)];
+        img.alt = "";
+        img.loading = "eager";
+        created.push(img);
+        track.appendChild(img);
+      }
 
-    const created = [];
-    for (let i = 0; i < minItems; i += 1) {
-      const icon = icons[Math.floor(Math.random() * icons.length)];
+      created.forEach((node) => track.appendChild(node.cloneNode(true)));
+    };
 
-      const wrapper = document.createElement("div");
-      wrapper.className = "finalSvgIcon"; // reuse your sizing styles
-
-      // Insert the SVG markup directly (best quality)
-      wrapper.innerHTML = icon.svg;
-
-      created.push(wrapper);
-      track.appendChild(wrapper);
-    }
-
-    // duplicate for seamless marquee like you already do
-    created.forEach((node) => track.appendChild(node.cloneNode(true)));
-  };
-
-  async function initMarquee() {
-    const icons = await fetchIcons();
     const rows = svgMarquee.querySelectorAll(".finalSvgRow");
-    rows.forEach((row) => buildRow(row, icons));
+    rows.forEach((row) => buildRow(row));
 
     let marqueeResizeRaf = null;
-    window.addEventListener("resize", () => {
+    const onResize = () => {
       if (marqueeResizeRaf !== null) return;
       marqueeResizeRaf = requestAnimationFrame(() => {
         marqueeResizeRaf = null;
-        rows.forEach((row) => buildRow(row, icons));
+        rows.forEach((row) => buildRow(row));
       });
-    });
+    };
+    window.addEventListener("resize", onResize);
   }
-
-  initMarquee();
-}
-
 });
 
 /**
@@ -1003,5 +988,3 @@ if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGr
       .to(solidDown, { rotation: 15, transformOrigin: "center center", ease: "none" }, 0);
   }
 }
-
- 

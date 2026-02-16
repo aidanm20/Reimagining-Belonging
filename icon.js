@@ -1,24 +1,4 @@
-async function submitIcon({ svg, answers, params }) {
-  const res = await fetch("/api/icons", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      svg,
-      answers,
-      params,
-      version: "v4-icon-rules-2026-01-04",
-      ts: new Date().toISOString()
-    })
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || "Failed to submit icon");
-  }
-
-  return res.json(); // { id: ... }
-}
-
+ 
 
 /* -------------------------
    1) Utility: seeded random

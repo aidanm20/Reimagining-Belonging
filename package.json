@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "scripts": {
+  "start": "node index.js", 
+  "vercel-start": "node index.js"  
+} ,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aidanm20/Scrolling-Website-Demo.git"
@@ -19,7 +23,11 @@
   },
   "homepage": "https://github.com/aidanm20/Scrolling-Website-Demo#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "mongodb": "^7.1.0"
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0",
+    "mongoose": "^9.2.1"
   }
+  
 }
