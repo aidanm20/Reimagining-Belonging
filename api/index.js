@@ -32,7 +32,7 @@ const iconSchema = new mongoose.Schema({
   params: { type: Object}
 }, {timestamps:true})
 
-const Icon = mongoose.model("Icon", iconSchema);
+const Icon = mongoose.models.Icon || mongoose.model("Icon", iconSchema);
 
 app.post("/api/submitIcon", async (req, res) => {
   const { svg, answers, params } = req.body;
