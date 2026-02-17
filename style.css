@@ -1693,7 +1693,7 @@ body.slide25-active .slide25 .imgContainer7 {
 }
 
 
-.finalSvgTrack {gap: -5px;}
+.finalSvgTrack {gap: -20px;}
 
 @keyframes finalMarqueeLeft {
   from {
