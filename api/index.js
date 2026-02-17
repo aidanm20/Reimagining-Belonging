@@ -42,4 +42,18 @@ app.post("/api/submitIcon", async (req, res) => {
   return res.status(201).json({ ok: true });
 });
 
+app.get("/api/recentIcons", async (req, res) => {
+  const docs = await Icon.find({})
+  .sort({ createdAt: -1})
+  .limit(30)
+  .select({ svg: 1, answers: 1, params: 1, createdAt: 1})
+  .lean();
+
+res.json({ ok: true, icons: docs });
+})
+ 
+
+
+
+
 module.exports = app;

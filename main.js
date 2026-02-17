@@ -463,48 +463,77 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const svgMarquee = document.querySelector(".finalSvgMarquee");
-  if (svgMarquee) {
-    const svgSources = Array.from({ length: 7 }, (_, i) => {
-      const index = String(i + 1).padStart(2, "0");
-      return `./svg/${index}inline.svg`;
-    });
+if (svgMarquee) {
+  async function loadRecentIcons() {
+    const res = await fetch("/api/recentIcons");
+    if (!res.ok) throw new Error(`recentIcons failed: ${res.status}`);
+    const data = await res.json();
+    return data.icons || [];
+  }
 
-    const buildRow = (row) => {
-      const track = row.querySelector(".finalSvgTrack");
-      if (!track) return;
-      track.innerHTML = "";
+  const fallbackSources = Array.from({ length: 7 }, (_, i) => {
+    const index = String(i + 1).padStart(2, "0");
+    return `./svg/${index}inline.svg`;
+  });
 
-      const rowWidth = row.getBoundingClientRect().width || window.innerWidth;
-      const minItems = Math.max(10, Math.ceil(rowWidth / 180) + 6);
-      const created = [];
+  const buildRow = (row, sources) => {
+    const track = row.querySelector(".finalSvgTrack");
+    if (!track) return;
+    track.innerHTML = "";
 
-      for (let i = 0; i < minItems; i += 1) {
-        const img = document.createElement("img");
-        img.className = "finalSvgIcon";
-        img.src = svgSources[Math.floor(Math.random() * svgSources.length)];
-        img.alt = "";
-        img.loading = "eager";
-        created.push(img);
-        track.appendChild(img);
+    const rowWidth = row.getBoundingClientRect().width || window.innerWidth;
+    const minItems = Math.max(10, Math.ceil(rowWidth / 180) + 6);
+    const created = [];
+
+    for (let i = 0; i < minItems; i += 1) {
+      const img = document.createElement("img");
+      img.className = "finalSvgIcon";
+      img.src = sources[Math.floor(Math.random() * sources.length)];
+      img.alt = "";
+      img.loading = "eager";
+      created.push(img);
+      track.appendChild(img);
+    }
+
+    created.forEach((node) => track.appendChild(node.cloneNode(true)));
+  };
+
+  const rows = svgMarquee.querySelectorAll(".finalSvgRow");
+
+  let activeSources = fallbackSources;
+
+  (async () => {
+    try {
+      const icons = await loadRecentIcons();
+
+      // convert DB svg text -> img src data URL
+      const dbSources = icons
+        .map((doc) => doc.svg)
+        .filter(Boolean)
+        .map((svgText) => `data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`);
+
+      if (dbSources.length > 0) {
+        activeSources = dbSources;
       }
 
-      created.forEach((node) => track.appendChild(node.cloneNode(true)));
-    };
+      rows.forEach((row) => buildRow(row, activeSources));
+    } catch (err) {
+      console.error(err);
+      rows.forEach((row) => buildRow(row, activeSources)); // fallback
+    }
+  })();
 
-    const rows = svgMarquee.querySelectorAll(".finalSvgRow");
-    rows.forEach((row) => buildRow(row));
-
-    let marqueeResizeRaf = null;
-    const onResize = () => {
-      if (marqueeResizeRaf !== null) return;
-      marqueeResizeRaf = requestAnimationFrame(() => {
-        marqueeResizeRaf = null;
-        rows.forEach((row) => buildRow(row));
-      });
-    };
-    window.addEventListener("resize", onResize);
-  }
-});
+  let marqueeResizeRaf = null;
+  const onResize = () => {
+    if (marqueeResizeRaf !== null) return;
+    marqueeResizeRaf = requestAnimationFrame(() => {
+      marqueeResizeRaf = null;
+      rows.forEach((row) => buildRow(row, activeSources));
+    });
+  };
+  window.addEventListener("resize", onResize);
+}
+})
 
 /**
  * slide24SVGs
