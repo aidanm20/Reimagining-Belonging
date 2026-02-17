@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require('mongoose')
 require("dotenv").config();
 
 const connectDB = require("../connectMongo");
@@ -24,14 +25,19 @@ app.use(async (_req, res, next) => {
   }
 });
 
-app.get("/api/health", (_req, res) => {
-  res.status(200).json({ ok: true });
-});
+ 
+const iconSchema = new mongoose.Schema({
+  svg: { type: String, required: true},
+  answers: { type: Object },
+  params: { type: Object}
+}, {timestamps:true})
+
+const Icon = mongoose.model("Icon", iconSchema);
 
 app.post("/api/submitIcon", async (req, res) => {
   const { svg, answers, params } = req.body;
   if (!svg) return res.status(400).json({ ok: false, error: "svg required" });
-
+  await Icon.create({svg,answers,params})
  
   return res.status(201).json({ ok: true });
 });
