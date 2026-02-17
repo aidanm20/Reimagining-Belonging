@@ -1689,8 +1689,11 @@ body.slide25-active .slide25 .imgContainer7 {
   height: 200px;
   width: auto;
   flex: 0 0 auto;
-  margin-right: -180px;
+  margin-right: 0;
 }
+
+
+.finalSvgTrack {gap: 16px;}
 
 @keyframes finalMarqueeLeft {
   from {
