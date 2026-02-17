@@ -4,12 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
-  "scripts": {
-  "start": "node index.js", 
-  "vercel-start": "node index.js"  
-} ,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aidanm20/Scrolling-Website-Demo.git"

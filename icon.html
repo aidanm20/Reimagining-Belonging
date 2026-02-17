@@ -121,22 +121,16 @@
         </div>
       </div>
 
-      <div class="q-inline">
-        <label>Optional: share my responses (default OFF)</label>
-        <label class="chip">
-          <input type="checkbox" id="optIn" />
-          Opt-in submission (later)
-        </label>
-      </div>
-      <div class="help">By default, no data will be submitted. Even if you check the box, it's currently just a demonstration: the payload will be printed to the console.</div>
+       <div class="help" style="margin-top: 15px; margin-bottom: 10px;">Click Submit to have your icon displayed on the website!</div>
+       
 
       <div class="footer">
-        <button class="primary" id="downloadSvg">Download SVG</button>
+        <button id="downloadSvg">Download SVG</button>
         <button id="downloadPng">Download PNG</button>
         <button id="copyLink">Copy Share Link</button>
-        <button id="submit" title="only if opt-in is on">Submit (opt-in)</button>
+        <button  class="primary"  id="submit" title="only if opt-in is on">Submit (opt-in)</button>
       </div>
-
+ 
       <div class="tiny">Share link will write parameters into the URL (no personal information).</div>
       <input class="link" id="shareUrl" readonly />
     </div>

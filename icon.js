@@ -712,37 +712,22 @@ function attach(){
   });
 
   document.getElementById('submit').addEventListener('click', async ()=>{
-    const optIn = document.getElementById('optIn').checked;
-    if (!optIn){
-       
-      return;
-    }
-
     try {
-    const result = await submitIcon({
+    const result = {
       svg: current.svgText,
       answers: current.answers,
       params: current.params
-    });
+    };
     console.log("Saved!", result);
 
-    // optional UI feedback:
-    // alert("Submitted — thank you!");
+    const res = await fetch("/api/submitIcon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result)
+    });
   } catch (e) {
     console.error(e);
-    // optional UI feedback:
-    // alert(e.message);
-  }
-
-    // 目前：只演示 payload（以后接你的 endpoint）
-    const payload = {
-      ts: new Date().toISOString(),
-      answers: current.answers,
-      params: current.params,
-      version: 'v4-icon-rules-2026-01-04'
-    };
-    console.log('SUBMIT payload (demo only):', payload);
-    
+  } 
   });
 }
 
