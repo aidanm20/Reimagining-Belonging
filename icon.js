@@ -592,7 +592,7 @@ function buildIconSVG(p){
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     ${defs}
-    <rect width="100%" height="100%" fill="#f2efe7"/>
+    <rect width="100%" height="100%"/>
     ${white}
     ${orbit}
     ${externalArc}
