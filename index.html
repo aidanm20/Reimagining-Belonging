@@ -21,7 +21,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
 </head>
-<body>
+<body class="pre-intro">
     <!--GSAP-->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
@@ -1407,6 +1407,13 @@ scheduleInitialMapScrollUpdate();
             let lockActive = false;
             let lockRaf = null;
 
+            const resetToIntroTop = () => {
+                lockActive = false;
+                document.body.classList.add("pre-intro");
+                document.body.classList.remove("force-scroll");
+                window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+            };
+
             const setStartLockY = () => {
                 if (!startSlide) return;
                 const rect = startSlide.getBoundingClientRect();
@@ -1478,18 +1485,16 @@ scheduleInitialMapScrollUpdate();
                 history.scrollRestoration = "manual";
             }
 
+            resetToIntroTop();
+            requestAnimationFrame(resetToIntroTop);
+            setTimeout(resetToIntroTop, 0);
+
             window.addEventListener("load", () => {
-                lockActive = false;
-                document.body.classList.add("pre-intro");
-                document.body.classList.remove("force-scroll");
-                window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                resetToIntroTop();
             });
 
             window.addEventListener("pageshow", () => {
-                lockActive = false;
-                document.body.classList.add("pre-intro");
-                document.body.classList.remove("force-scroll");
-                window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                resetToIntroTop();
             });
         })();
 

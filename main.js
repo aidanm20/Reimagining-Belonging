@@ -487,6 +487,36 @@ if (svgMarquee) {
     return `./svg/${index}inline.svg`;
   });
 
+  const stripFullBackgroundRect = (svgText) => {
+    if (!svgText) return svgText;
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgText, "image/svg+xml");
+      const svg = doc.documentElement;
+      if (!svg || svg.tagName.toLowerCase() !== "svg") return svgText;
+
+      const directRect = Array.from(svg.children).find((node) => {
+        if (node.tagName.toLowerCase() !== "rect") return false;
+        const width = (node.getAttribute("width") || "").trim().toLowerCase();
+        const height = (node.getAttribute("height") || "").trim().toLowerCase();
+        const x = (node.getAttribute("x") || "0").trim();
+        const y = (node.getAttribute("y") || "0").trim();
+        return (
+          (width === "100%" || width === "100") &&
+          (height === "100%" || height === "100") &&
+          (x === "0" || x === "0%") &&
+          (y === "0" || y === "0%")
+        );
+      });
+
+      if (!directRect) return svgText;
+      directRect.remove();
+      return new XMLSerializer().serializeToString(svg);
+    } catch {
+      return svgText;
+    }
+  };
+
   const buildRow = (row, sources) => {
     const track = row.querySelector(".finalSvgTrack");
     if (!track) return;
@@ -521,6 +551,7 @@ if (svgMarquee) {
       const dbSources = icons
         .map((doc) => doc.svg)
         .filter(Boolean)
+        .map((svgText) => stripFullBackgroundRect(svgText))
         .map((svgText) => `data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`);
 
       if (dbSources.length > 0) {
