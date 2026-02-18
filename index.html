@@ -246,19 +246,18 @@
         <div class="mapWrap">
             <div id="map2"></div>
             <div id="tooltip2" class="tooltip"></div>
-            <div id="legend2" class="legend">
-                <div class="legend-title">Gen Z Migration</div>
+             
+            <div id="legend3" class="legend"> 
                 <div class="legend-item">
-                <div class="legend-line outbound"></div>
-                <span>Outbound</span>
+                 
+                <span id="legend-title">Top 5 Highest Populations</span>
                 </div>
+                <ol id="outboundList" style="margin-left: 20px;"></ol>
                 <div class="legend-item">
-                <div class="legend-line inbound"></div>
-                <span>Inbound</span>
-                </div>
-                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; color: #999; font-size: 11px;">
-                Line width & opacity<br/>scale with volume
-                </div>
+              
+                <span style="margin-top: 20px;" id="legend-title">Top 5 Lowest Populations</span>
+                </div> 
+                <ol id="inboundList" style="margin-left: 20px;"></ol>
             </div>
         </div>
     </section>
@@ -292,8 +291,8 @@
 
     <div class="belongingLabel">Belonging is...</div>
 
-    <img class="slide17Reveal left" src="./images/belongingLeft.png" alt="Belonging quote left" style="width: 30vw;"/>
-    <img class="slide17Reveal right" src="./images/belongingRight.png" alt="Belonging quote right" style="width: 30vw;"/>
+    <img class="slide17Reveal left" src="./images/belongingLeft.png" alt="Belonging quote left" />
+    <img class="slide17Reveal right" src="./images/belongingRight.png" alt="Belonging quote right" />
   </div>
 </section>
 
@@ -309,10 +308,61 @@
             </div>
         </div>
         <div class="slide18Media" aria-hidden="true">
-            <img class="img-green" src="./images/greenImg.png" alt="Place image" />
-            <img class="img-yellow" src="./images/yellowImg.png" alt="Object image" />
-            <img class="img-red" src="./images/redImg.png" alt="Person image" />
-            <img class="img-blue" src="./images/blueImg.png" alt="Language image" />
+            <div class="greenMedia">
+                <div class="leftGreenText" id="leftText">
+                    “<span id="highlightText">Pine trees </span>will always remind me of home.”  – Lexi<br/>
+                    <br/>“Those little <span id="highlightText">garden spaces</span> where you can go sit<br/> for a while that feels like home to me.” – Sherry<br/>
+                    <br/>“For me, the <span id="highlightText"> living room</span> is very important, because <br/> friends can gather there… I want to be able to <span id="highlightText">walk</span>  to my<br/> friends’ homes, not by subway.”  – FY<br/>
+                    <br/>“I like the <span id="highlightText">flexibility</span>  and the <span id="highlightText">warmth</span>  of that<br/> space. And then we had a view of a <span id="highlightText">tree</span>  out the window,<br/> which was very quaint.” - Klyee
+                </div>
+                <div class="greenText">Place</div>
+                <img class="img-green" src="./images/greenImg.png" alt="Place image" />
+            </div>
+             <div class="yellowMedia">
+                <div class="leftYellowText" id="leftText">
+                    “It's something so small… wherever I move, I end up <br/> bringing the <span id="highlightText">nightstand</span>  with me, because it has <br/>everything I need.” - Michaella<br/>
+                    <br/>“We’ve been working on trying to integrate some of our<br/>
+                    own <span id="highlightText">blankets</span>  and <span id="highlightText">pillows…</span>  We’ve managed to <br/>
+                    fit all the lamps in there.” - Klyee<br/>
+                    <br/>“And there’s also the Chinese-style <span id="highlightText">bedding</span>  often <br/>
+                    has a padded layer on top of the mattress. I’m actually <br/>
+                    still trying to find where to buy one. I really like that.” - Joy
+
+                </div>
+                <div class="yellowText">Object</div>
+                <img class="img-yellow" src="./images/yellowImg.png" alt="Object image" />
+             </div>
+             <div class="redMedia">
+                <div class="leftRedText" id="leftText">
+                    “A place with <span id="highlightText">friends</span> can feel like home.” – FY<br/>
+                    <br/>“It’s very easy to <span id="highlightText"> meet people</span>. What’s harder is <br/>
+                    creating repeat connections.” – Lexi<br/>
+                    <br/>“I feel homesick for <span id="highlightText"> people</span>.”  – Klyee<br/>
+                    <br/>“I kind of like the <span id="highlightText"> fluid connection</span>, because it lets <br/>relationships happen more naturally. There doesn’t have to be<br/> this feeling of, ‘I’m going to be here, I know you’re going to be <br/>here.’” - Oliver
+
+                </div>
+                <div class="redText">Person</div>
+                <img class="img-red" src="./images/redImg.png" alt="Person image" />
+             </div>
+             <div class="blueMedia">
+                <div class="leftBlueText" id="leftText">
+                    “Any time I speak <span id="highlightText">Thai</span>, it’s just such a warm, <br/>
+                    comfortable feeling, <span id="highlightText">even though I’m bad<br/>
+                    at Thai</span>.” – Lexi<br/>
+                    <br/>“Sometimes my native language isn’t their native <br/>
+                    language, and theirs isn’t mine either. So, <span id="highlightText">we can <br/>
+                    only meet in English</span>. And it feels like we’re <br/>
+                    using Lego, like a playground, to build a home that <br/>
+                    belongs to us.” – FY<br/>
+                    <br/>“TV shows, variety shows… there’s always <br/>
+                    <span id="highlightText">something to talk about.</span>” - Sherry
+                </div>
+                <div class="blueText">Language</div>
+                <img class="img-blue" src="./images/blueImg.png" alt="Language image" />
+             </div>
+             
+             
+             
         </div>
         <div class="greenSVGContainer">
             <svg height="100" width="100" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
@@ -461,8 +511,8 @@ Reimagining belonging becomes something that can be tried, repeated, and built t
         </div>
         <img class="slide23Left" src="./images/23Left.png" alt="Place image" />
         <img class="slide23Right" src="./images/23Right.png" alt="Place image" />
-        <img class="img21" src="./images/21.png" alt="Place image" />
-        <img class="img22" src="./images/22.png" alt="Place image" />
+        <img class="img21" style="margin-top: 10px;" src="./images/21.png" alt="Place image" />
+        <img class="img22" style="margin-top: 10px;" src="./images/22.png" alt="Place image" />
         <!-- 
         <div class="slide21Orbs" aria-hidden="true">
             <svg class="slide21Orb slide21Orb--left" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -843,7 +893,7 @@ time I went home, I felt a bit sad.”
                     <div class="finalSvgTrack"></div>
                 </div>
             </div>
-            <button class="makeIconButton" onclick=" window.open('icon.html','_blank')">Make my icon</button>
+            <button style="margin-top: 10px;" class="makeIconButton" onclick=" window.open('icon.html','_blank')">Make my icon</button>
 
 
             <div class="slide28BottomText">
@@ -998,8 +1048,36 @@ function initMap(containerId, tooltipId) {
     ]).then(([flows, statesGeo]) => {
       const maxPopulation = Math.max(...flows.map(f => f.population));
       const minPopulation = Math.min(...flows.map(f => f.population));
+      const topGlobal = [...flows].sort((a,b) => b.population - a.population).slice(0,5);
+      const leastGlobal = [...flows].sort((a,b) => a.population - b.population).slice(0,5);
+console.table(topGlobal);
+console.table( topGlobal[0].from_abbr + "->" + topGlobal[0].to_abbr + topGlobal[0].population)
+        if (containerId == 'map2') {
+            const outboundList = document.getElementById('outboundList'); 
+            const inboundList = document.getElementById('inboundList')
+            for (let i = 0; i < 5; i++) {
+                let newLi = document.createElement("li");
+                newLi.appendChild(document.createTextNode(topGlobal[i].from_abbr + " → " + topGlobal[i].to_abbr + " | " + topGlobal[i].population.toLocaleString()));
+                outboundList.appendChild(newLi);
+            }
+
+            for (let j = 0; j < 5; j++) {
+                let newLi = document.createElement("li");
+                newLi.appendChild(document.createTextNode(leastGlobal[j].from_abbr + " → " + leastGlobal[j].to_abbr + " | " + leastGlobal[j].population.toLocaleString()));
+                inboundList.appendChild(newLi);
+            }
+        }
+         
+         
+
+
+
+
+
+
 
       const idx = buildFlowIndex(flows);
+      console.log(idx)
       let currentHoveredState = null;
 
       const overlay = new deck.MapboxOverlay({
@@ -1014,6 +1092,7 @@ function initMap(containerId, tooltipId) {
       };
 
       const createColoredLayer = (data, id, isOutbound, isOutboundFlow) => {
+        console.log(data)
         return new deck.ArcLayer({
           id,
           data,
@@ -1362,15 +1441,37 @@ scheduleInitialMapScrollUpdate();
                 });
             };
 
+            const enableStartLockWhenReached = () => {
+                if (!startSlide || lockActive) return;
+                const watch = () => {
+                    if (lockActive) return;
+                    if (window.scrollY >= startLockY - 1) {
+                        enableStartLock();
+                        return;
+                    }
+                    requestAnimationFrame(watch);
+                };
+                requestAnimationFrame(watch);
+            };
+
+            const refreshAfterIntro = () => {
+                window.dispatchEvent(new Event("scroll"));
+                window.dispatchEvent(new Event("resize"));
+            };
+
             window.intro = function intro() {
                 setStartLockY();
                 document.body.classList.remove("popup-open");
+                document.body.classList.remove("pre-intro");
                 document.body.classList.add("force-scroll");
                 window.scrollTo({
                     top: startLockY || window.innerHeight,
                     left: 0,
                     behavior: "smooth"
                 });
+                enableStartLockWhenReached();
+                requestAnimationFrame(refreshAfterIntro);
+                setTimeout(refreshAfterIntro, 550);
             };
 
             if ("scrollRestoration" in history) {
@@ -1379,14 +1480,20 @@ scheduleInitialMapScrollUpdate();
 
             window.addEventListener("load", () => {
                 lockActive = false;
+                document.body.classList.add("pre-intro");
+                document.body.classList.remove("force-scroll");
                 window.scrollTo({ top: 0, left: 0, behavior: "auto" });
             });
 
             window.addEventListener("pageshow", () => {
                 lockActive = false;
+                document.body.classList.add("pre-intro");
+                document.body.classList.remove("force-scroll");
                 window.scrollTo({ top: 0, left: 0, behavior: "auto" });
             });
         })();
+
+        
     </script>
 </body>
 </html>

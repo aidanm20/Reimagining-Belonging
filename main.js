@@ -932,29 +932,26 @@ if (orbs && slide19Section && slide23 && slide24) {
 if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGroup && slide23 && slide24) {
   const computeTargets = () => {
     const vw = window.innerWidth;
-    const vh = window.innerHeight;
     const orbSize =
-      Number.parseFloat(getComputedStyle(orbs).getPropertyValue("--orb-size")) || 400;
-    const edgeInset =
-      Number.parseFloat(getComputedStyle(orbs).getPropertyValue("--orb-edge-inset")) || 40;
-    const leftEdge = 0.1 * vw;
-    const containerWidth = vw - leftEdge * 2;
+      leftOrb.getBoundingClientRect().width ||
+      Number.parseFloat(getComputedStyle(orbs).getPropertyValue("--orb-size")) ||
+      400;
+    const leftEdge = 0.12 * vw;
 
     const leftOrbLeft = leftEdge;
-    const leftTargetLeft = leftEdge + 0.3 * containerWidth;
+    const centerX = 0.5 * vw;
+    const overlapSeparation = orbSize * 0.18;
+    const leftTargetLeft = centerX - overlapSeparation - orbSize / 2;
     const leftDeltaX = leftTargetLeft - leftOrbLeft;
-    const leftDeltaY = -0.03 * vh;
+    const leftDeltaY = -(orbSize * 0.10);
 
-    const rightTargetRight = leftEdge + 0.33 * containerWidth;
     const rightCurrentLeft = vw - leftEdge - orbSize;
-    const rightTargetLeft = vw - rightTargetRight - orbSize;
+    const rightTargetLeft = centerX + overlapSeparation - orbSize / 2;
     const rightDeltaX = rightTargetLeft - rightCurrentLeft;
-    const rightDeltaY = 0.03 * vh;
+    const rightDeltaY = orbSize * 0.10;
 
-    const leftLineWithin = 0.3 * containerWidth + orbSize / 1.5 - edgeInset;
-    const rightLineWithin = 0.33 * containerWidth + orbSize - edgeInset;
-    const lineLeft = leftEdge + leftLineWithin;
-    const lineWidth = Math.max(130, containerWidth - leftLineWithin - rightLineWithin);
+    const lineLeft = centerX - orbSize * 0.08;
+    const lineWidth = Math.max(80, orbSize * 0.34);
 
     return {
       leftDeltaX,
@@ -991,10 +988,6 @@ if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGr
       rotation: 35,
       transformOrigin: "left center",
       ease: "none"
-    }, 0)
-    .to(orbs, {
-      "--line-stroke": 3,
-      ease: "none"
     }, 0);
 
   if (dashedLine && solidLines.length) {
@@ -1024,7 +1017,8 @@ if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGr
         invalidateOnRefresh: true
       }
     })
-      .to(solidUp, { rotation: -15, transformOrigin: "center center", ease: "none" }, 0)
-      .to(solidDown, { rotation: 15, transformOrigin: "center center", ease: "none" }, 0);
+      .to(solidUp, { rotation: -15, transformOrigin: "left center", ease: "none" }, 0)
+      .to(solidDown, { rotation: 15, transformOrigin: "left center", ease: "none" }, 0);
   }
 }
+ 
