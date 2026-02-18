@@ -313,6 +313,18 @@ body.pre-intro {
   height: 100vh;
 }
 
+body.pre-intro .slide1 {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10000;
+}
+
+body.pre-intro .slide:not(.slide1) {
+  pointer-events: none;
+}
+
 body.popup-open {
   overflow: hidden;
 }
@@ -1064,10 +1076,10 @@ p {
   --slide18-image-width: clamp(220px, 28vw, 460px);
   --slide18-image-max-height: min(30vh, 300px);
   --slide18-left-width: clamp(220px, 24vw, 420px);
-  --slide18-left-font-size: clamp(8px, 0.52vw + 0.22vh, 12px);
-  --slide18-left-line-height: 1.35;
+  --slide18-left-font-size: clamp(6.8px, 0.36vw + 0.16vh, 9.6px);
+  --slide18-left-line-height: 1.28;
   --slide18-circle-top: calc(50vh + (var(--circle-green) * 0.0625));
-  --slide18-left-top: clamp(16vh, 22vh, 24vh);
+  --slide18-left-top: clamp(18vh, 22vh, 25vh);
 }
 
 .slide18Media {
@@ -1119,14 +1131,15 @@ p {
   bottom: calc(100vh - var(--slide18-circle-top) + 5px);
   width: var(--slide18-left-width);
   transform: translateX(calc(-100% - var(--slide18-left-offset)));
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  display: block;
   text-align: left;
   color: #f2efe7;
   opacity: 0;
   font-size: var(--slide18-left-font-size);
   line-height: var(--slide18-left-line-height);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
   font-family:'Inter';
   font-style: italic;
   transition: opacity .5s ease;
@@ -1137,9 +1150,28 @@ p {
     --slide18-image-width: clamp(180px, 31vw, 390px);
     --slide18-image-max-height: min(24vh, 230px);
     --slide18-left-width: clamp(170px, 28vw, 300px);
-    --slide18-left-font-size: clamp(8px, 0.9vw, 11px);
-    --slide18-left-top: clamp(15vh, 20vh, 23vh);
+    --slide18-left-font-size: clamp(6.4px, 0.72vw, 8.8px);
+    --slide18-left-top: clamp(18vh, 21vh, 24vh);
   }
+}
+
+.slide18Media #leftText {
+  font-size: var(--slide18-left-font-size);
+  line-height: var(--slide18-left-line-height);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  color: #f2efe7;
+}
+
+.slide18Media #highlightText {
+  display: inline;
+  white-space: inherit;
+  line-height: inherit;
+  font-family: 'Inter', sans-serif;
+  color: #f2efe7;
 }
 
 .slide18Media .greenMedia .img-green {

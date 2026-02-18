@@ -1406,12 +1406,35 @@ scheduleInitialMapScrollUpdate();
             let startLockY = 0;
             let lockActive = false;
             let lockRaf = null;
+            let introStarted = false;
+            let holdTopRaf = null;
+
+            const stopHoldingTop = () => {
+                if (holdTopRaf !== null) {
+                    cancelAnimationFrame(holdTopRaf);
+                    holdTopRaf = null;
+                }
+            };
+
+            const holdAtTopUntilIntro = () => {
+                stopHoldingTop();
+                const tick = () => {
+                    if (introStarted) return;
+                    if (window.scrollY !== 0) {
+                        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                    }
+                    holdTopRaf = requestAnimationFrame(tick);
+                };
+                holdTopRaf = requestAnimationFrame(tick);
+            };
 
             const resetToIntroTop = () => {
+                introStarted = false;
                 lockActive = false;
                 document.body.classList.add("pre-intro");
                 document.body.classList.remove("force-scroll");
                 window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+                holdAtTopUntilIntro();
             };
 
             const setStartLockY = () => {
@@ -1467,6 +1490,8 @@ scheduleInitialMapScrollUpdate();
             };
 
             window.intro = function intro() {
+                introStarted = true;
+                stopHoldingTop();
                 setStartLockY();
                 document.body.classList.remove("popup-open");
                 document.body.classList.remove("pre-intro");
