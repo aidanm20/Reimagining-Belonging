@@ -250,14 +250,9 @@
             <div id="legend3" class="legend"> 
                 <div class="legend-item">
                  
-                <span id="legend-title">Top 5 Highest Populations</span>
+                <span id="legend-title" style="font-weight: 600;">Top 5 Highest Populations</span>
                 </div>
-                <ol id="outboundList" style="margin-left: 20px;"></ol>
-                <div class="legend-item">
-              
-                <span style="margin-top: 20px;" id="legend-title">Top 5 Lowest Populations</span>
-                </div> 
-                <ol id="inboundList" style="margin-left: 20px;"></ol>
+                <ol id="outboundList" style="margin-left: 20px;"></ol> 
             </div>
         </div>
     </section>
@@ -981,7 +976,522 @@ function buildFlowIndex(flows) {
   return { out, inn };
 }
 
+function createMap2MarkerElement(scale = 1) {
+  const marker = document.createElement("div");
+  marker.className = "map2-svg-marker";
+  marker.style.setProperty("--marker-scale", String(scale));
+  marker.innerHTML = `
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <circle class="marker-core" cx="20" cy="20" r="8"></circle>
+      <circle class="marker-ring" cx="20" cy="20" r="12"></circle>
+    </svg>
+  `;
+  return marker;
+}
+
+function createInitMapStageMarkerElement(idSuffix) {
+  const marker = document.createElement("div");
+  marker.className = "initmap-stage-marker";
+  const gradientId = `GradientInitMap-${idSuffix}`;
+  marker.innerHTML = `
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="${gradientId}" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="50%" stop-color="#333333" />
+          <stop offset="100%" stop-color="transparent" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#${gradientId})" />
+    </svg>
+  `;
+  return marker;
+}
+
+function lonLatToMercatorMeters([lon, lat]) {
+  const originShift = 20037508.34;
+  const mx = (lon * originShift) / 180;
+  let my = Math.log(Math.tan(((90 + lat) * Math.PI) / 360)) / (Math.PI / 180);
+  my = (my * originShift) / 180;
+  return [mx, my];
+}
+
+function mercatorMetersToLonLat([mx, my]) {
+  const originShift = 20037508.34;
+  const lon = (mx / originShift) * 180;
+  let lat = (my / originShift) * 180;
+  lat = (180 / Math.PI) * (2 * Math.atan(Math.exp((lat * Math.PI) / 180)) - Math.PI / 2);
+  return [lon, lat];
+}
+
+function buildCircleThroughTwoPoints(coordA, coordB, steps = 180) {
+  const a = lonLatToMercatorMeters(coordA);
+  const b = lonLatToMercatorMeters(coordB);
+  const cx = (a[0] + b[0]) / 2;
+  const cy = (a[1] + b[1]) / 2;
+  const radius = Math.hypot(a[0] - cx, a[1] - cy);
+  const ring = [];
+
+  for (let i = 0; i <= steps; i += 1) {
+    const theta = (i / steps) * Math.PI * 2;
+    const x = cx + radius * Math.cos(theta);
+    const y = cy + radius * Math.sin(theta);
+    ring.push(mercatorMetersToLonLat([x, y]));
+  }
+
+  return ring;
+}
+
+function buildSemicircleBetweenPoints(coordA, coordB, faceUp = true, steps = 120, heightScale = 1) {
+  const a = lonLatToMercatorMeters(coordA);
+  const b = lonLatToMercatorMeters(coordB);
+  const cx = (a[0] + b[0]) / 2;
+  const cy = (a[1] + b[1]) / 2;
+  const ux = a[0] - cx;
+  const uy = a[1] - cy;
+  const r = Math.hypot(ux, uy);
+  if (r === 0) return [coordA, coordB];
+
+  const nx = ux / r;
+  const ny = uy / r;
+  const px = -ny;
+  const py = nx;
+
+  const makeArc = (sign) => {
+    const coords = [];
+    for (let i = 0; i <= steps; i += 1) {
+      const t = i / steps;
+      const theta = sign * Math.PI * t;
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta) * heightScale;
+      const x = cx + r * (cosT * nx + sinT * px);
+      const y = cy + r * (cosT * ny + sinT * py);
+      coords.push(mercatorMetersToLonLat([x, y]));
+    }
+    return coords;
+  };
+
+  const arcPlus = makeArc(1);
+  const arcMinus = makeArc(-1);
+  const plusMidY = lonLatToMercatorMeters(arcPlus[Math.floor(arcPlus.length / 2)])[1];
+  const minusMidY = lonLatToMercatorMeters(arcMinus[Math.floor(arcMinus.length / 2)])[1];
+
+  if (faceUp) {
+    return plusMidY >= minusMidY ? arcPlus : arcMinus;
+  }
+  return plusMidY < minusMidY ? arcPlus : arcMinus;
+}
+
+function buildInitDottedGradient(phase) {
+  const cycle = 0.068;
+    const dot = 0.02;
+  return [
+    "case",
+    ["<", ["%", ["+", ["line-progress"], phase], cycle], dot],
+    "#333333",
+    "rgba(51,51,51,0.08)"
+  ];
+}
+
+function startInitialStageRingAnimation(map, sourceId, baseRingCoords, stageGetter) {
+  let rafId = null;
+  let lastTs = 0;
+  const cycleDurationMs = 26000;
+  let phase = 0;
+
+  const isClosed =
+    baseRingCoords.length > 2 &&
+    baseRingCoords[0][0] === baseRingCoords[baseRingCoords.length - 1][0] &&
+    baseRingCoords[0][1] === baseRingCoords[baseRingCoords.length - 1][1];
+  const ringOpen = isClosed ? baseRingCoords.slice(0, -1) : baseRingCoords.slice();
+  const ringLen = ringOpen.length;
+
+  const rotateRing = (coords, start) => {
+    if (!coords.length) return coords;
+    const s = ((start % coords.length) + coords.length) % coords.length;
+    if (s === 0) return coords.slice();
+    return coords.slice(s).concat(coords.slice(0, s));
+  };
+
+  const interpolateRing = (coords, offsetFloat) => {
+    if (!coords.length) return coords;
+    const base = Math.floor(offsetFloat);
+    const frac = offsetFloat - base;
+    const rotated = rotateRing(coords, base);
+    if (frac <= 0) return rotated;
+
+    const out = [];
+    for (let i = 0; i < rotated.length; i += 1) {
+      const a = rotated[i];
+      const b = rotated[(i + 1) % rotated.length];
+      out.push([
+        a[0] + (b[0] - a[0]) * frac,
+        a[1] + (b[1] - a[1]) * frac
+      ]);
+    }
+    return out;
+  };
+
+  const tick = (ts) => {
+    if (!lastTs) lastTs = ts;
+    const elapsed = ts - lastTs;
+    lastTs = ts;
+    phase = (phase - elapsed / cycleDurationMs + 1) % 1;
+
+    if (stageGetter() === 1 && map.getSource(sourceId) && ringLen > 2) {
+      const smoothRing = interpolateRing(ringOpen, phase * ringLen);
+      const closedRotated = smoothRing.concat([smoothRing[0]]);
+      map.getSource(sourceId).setData({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: closedRotated
+            }
+          }
+        ]
+      });
+    }
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+  map.on("remove", () => {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+  });
+}
+
+function startFinalStageArcAnimation(map, sourceId, baseArcs, stageGetter) {
+  let rafId = null;
+  let lastTs = 0;
+  let offsetMeters = 0;
+  let wasStage2 = false;
+  const cycleDurationMs = 38000;
+  const segmentLengthMeters = 260000;
+  const gapLengthMeters = 900000;
+  const patternLengthMeters = segmentLengthMeters + gapLengthMeters;
+
+  const distanceMeters = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+
+  const buildCumulative = (points) => {
+    const cumulative = [0];
+    for (let i = 1; i < points.length; i += 1) {
+      cumulative.push(cumulative[i - 1] + distanceMeters(points[i - 1], points[i]));
+    }
+    return cumulative;
+  };
+
+  const interpolateAtDistance = (points, cumulative, dist) => {
+    if (dist <= 0) return points[0];
+    const total = cumulative[cumulative.length - 1];
+    if (dist >= total) return points[points.length - 1];
+
+    let i = 1;
+    while (i < cumulative.length && cumulative[i] < dist) i += 1;
+    const prevDist = cumulative[i - 1];
+    const nextDist = cumulative[i];
+    const span = nextDist - prevDist || 1;
+    const t = (dist - prevDist) / span;
+    const a = points[i - 1];
+    const b = points[i];
+    return [
+      a[0] + (b[0] - a[0]) * t,
+      a[1] + (b[1] - a[1]) * t
+    ];
+  };
+
+  const extractSegment = (points, cumulative, startDist, endDist) => {
+    if (endDist <= startDist) return [];
+    const segment = [interpolateAtDistance(points, cumulative, startDist)];
+
+    for (let i = 1; i < points.length - 1; i += 1) {
+      const d = cumulative[i];
+      if (d > startDist && d < endDist) {
+        segment.push(points[i]);
+      }
+    }
+
+    segment.push(interpolateAtDistance(points, cumulative, endDist));
+    return segment.map(mercatorMetersToLonLat);
+  };
+
+  const preparedArcs = baseArcs
+    .map((coords) => {
+      if (!coords || coords.length < 2) return null;
+      const points = coords.map(lonLatToMercatorMeters);
+      const cumulative = buildCumulative(points);
+      const totalLength = cumulative[cumulative.length - 1];
+      if (totalLength <= 0) return null;
+      return { points, cumulative, totalLength };
+    })
+    .filter(Boolean);
+
+  const averageArcLength =
+    preparedArcs.length > 0
+      ? preparedArcs.reduce((sum, arc) => sum + arc.totalLength, 0) / preparedArcs.length
+      : 0;
+  const speedMetersPerMs = averageArcLength > 0 ? averageArcLength / cycleDurationMs : 0;
+
+  const buildAnimatedData = (offset) => {
+    const wrappedOffset = ((offset % patternLengthMeters) + patternLengthMeters) % patternLengthMeters;
+    const features = preparedArcs
+      .map((arc) => {
+        const segments = [];
+        let start = -wrappedOffset;
+
+        while (start < arc.totalLength) {
+          const segStart = Math.max(0, start);
+          const segEnd = Math.min(arc.totalLength, start + segmentLengthMeters);
+          if (segEnd - segStart > 1) {
+            const coords = extractSegment(arc.points, arc.cumulative, segStart, segEnd);
+            if (coords.length > 1) segments.push(coords);
+          }
+          start += patternLengthMeters;
+        }
+
+        if (!segments.length) return null;
+        return {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "MultiLineString",
+            coordinates: segments
+          }
+        };
+      })
+      .filter(Boolean);
+
+    return {
+      type: "FeatureCollection",
+      features
+    };
+  };
+
+  const tick = (ts) => {
+    if (!lastTs) lastTs = ts;
+    const elapsed = ts - lastTs;
+    lastTs = ts;
+    const source = map.getSource(sourceId);
+    const isStage2 = stageGetter() === 2;
+
+    if (source && isStage2) {
+      offsetMeters += elapsed * speedMetersPerMs;
+      source.setData(buildAnimatedData(offsetMeters));
+      wasStage2 = true;
+    } else if (source && wasStage2) {
+      offsetMeters = 0;
+      source.setData(buildAnimatedData(0));
+      wasStage2 = false;
+    }
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+  map.on("remove", () => {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+  });
+}
+
+function startInitPathAnimation(map, layerIds) {
+  let rafId = null;
+  let last = 0;
+  let phase = 0;
+
+  const tick = (ts) => {
+    if (ts - last >= 120) {
+      last = ts;
+      phase += 0.0025;
+      if (phase > 1) phase -= 1;
+      layerIds.forEach((layerId) => {
+        if (map.getLayer(layerId)) {
+          map.setPaintProperty(layerId, "line-gradient", buildInitDottedGradient(phase));
+        }
+      });
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+  map.on("remove", () => {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+  });
+}
+
+function toRadians(value) {
+  return value * (Math.PI / 180);
+}
+
+function haversineKm(a, b) {
+  const R = 6371;
+  const dLat = toRadians(b[1] - a[1]);
+  const dLon = toRadians(b[0] - a[0]);
+  const lat1 = toRadians(a[1]);
+  const lat2 = toRadians(b[1]);
+  const s =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  return 2 * R * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+}
+
+function interpolateLngLat(a, b, t) {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t
+  ];
+}
+
+function buildCorridorSegments(topGlobal) {
+  const segmentSpacingKm = 80;
+  const segmentLengthKm = 20;
+  const features = [];
+
+  topGlobal.forEach((flow, corridorIndex) => {
+    const start = [flow.from_lon, flow.from_lat];
+    const end = [flow.to_lon, flow.to_lat];
+    const totalKm = Math.max(1, haversineKm(start, end));
+    const segmentCount = Math.max(1, Math.floor(totalKm / segmentSpacingKm));
+
+    for (let segIndex = 0; segIndex <= segmentCount; segIndex += 1) {
+      const startKm = segIndex * segmentSpacingKm;
+      if (startKm > totalKm) break;
+      const endKm = Math.min(startKm + segmentLengthKm, totalKm);
+      const t0 = Math.min(1, startKm / totalKm);
+      const t1 = Math.min(1, endKm / totalKm);
+
+      if (t1 <= t0) continue;
+
+      features.push({
+        type: "Feature",
+        properties: {
+          rank: corridorIndex + 1,
+          corridorIndex,
+          segIndex
+        },
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            interpolateLngLat(start, end, t0),
+            interpolateLngLat(start, end, t1)
+          ]
+        }
+      });
+    }
+  });
+
+  return features;
+}
+
+function buildSegmentColorExpression(phase) {
+  const cycle = 5;
+  const litSegments = 2;
+  return [
+    "case",
+    ["<", ["%", ["+", ["get", "segIndex"], phase], cycle], litSegments],
+    "#c4a448",
+    "#8f7742"
+  ];
+}
+
+function startCorridorFlowAnimation(map, layerId) {
+  let rafId = null;
+  let last = 0;
+  const cycle = 5;
+  let phase = 0;
+
+  const tick = (ts) => {
+    if (!map.getLayer(layerId)) return;
+    if (ts - last >= 130) {
+      last = ts;
+      phase = (phase - 1 + cycle) % cycle;
+      map.setPaintProperty(layerId, "line-color", buildSegmentColorExpression(phase));
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+
+  rafId = requestAnimationFrame(tick);
+  map.on("remove", () => {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+  });
+}
+
+function addTopCorridorLayerAndMarkers(map, topGlobal) {
+  const sourceId = "top-corridor-lines";
+  const layerId = "top-corridor-lines-dotted";
+  const features = buildCorridorSegments(topGlobal);
+
+  map.addSource(sourceId, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features
+    }
+  });
+
+  map.addLayer({
+    id: layerId,
+    type: "line",
+    source: sourceId,
+    layout: {
+      "line-cap": "round",
+      "line-join": "round"
+    },
+    paint: {
+      "line-color": "#c4a448",
+      "line-opacity": 1,
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["get", "rank"],
+        1, 2.6,
+        10, 1.4
+      ]
+    }
+  });
+
+  const nodeWeights = new Map();
+  for (const flow of topGlobal) {
+    const fromKey = `${flow.from_abbr}:${flow.from_lon},${flow.from_lat}`;
+    const toKey = `${flow.to_abbr}:${flow.to_lon},${flow.to_lat}`;
+
+    if (!nodeWeights.has(fromKey)) {
+      nodeWeights.set(fromKey, {
+        lon: flow.from_lon,
+        lat: flow.from_lat,
+        weight: 0
+      });
+    }
+    if (!nodeWeights.has(toKey)) {
+      nodeWeights.set(toKey, {
+        lon: flow.to_lon,
+        lat: flow.to_lat,
+        weight: 0
+      });
+    }
+
+    nodeWeights.get(fromKey).weight += flow.population;
+    nodeWeights.get(toKey).weight += flow.population;
+  }
+
+  const nodes = [...nodeWeights.values()];
+  const maxWeight = Math.max(...nodes.map(d => d.weight));
+
+  for (const node of nodes) {
+    const ratio = maxWeight > 0 ? node.weight / maxWeight : 0;
+    const scale = 0.9 + ratio * 0.7;
+    const marker = new mapboxgl.Marker({
+      element: createMap2MarkerElement(scale),
+      anchor: "center"
+    });
+    marker.setLngLat([node.lon, node.lat]).addTo(map);
+  }
+}
+
 function initMap(containerId, tooltipId) {
+  const isMap2 = containerId === "map2";
   const tooltip = document.getElementById(tooltipId);
 
   function showTooltip(x, y, html) {
@@ -1048,36 +1558,25 @@ function initMap(containerId, tooltipId) {
     ]).then(([flows, statesGeo]) => {
       const maxPopulation = Math.max(...flows.map(f => f.population));
       const minPopulation = Math.min(...flows.map(f => f.population));
-      const topGlobal = [...flows].sort((a,b) => b.population - a.population).slice(0,5);
-      const leastGlobal = [...flows].sort((a,b) => a.population - b.population).slice(0,5);
-console.table(topGlobal);
-console.table( topGlobal[0].from_abbr + "->" + topGlobal[0].to_abbr + topGlobal[0].population)
-        if (containerId == 'map2') {
-            const outboundList = document.getElementById('outboundList'); 
-            const inboundList = document.getElementById('inboundList')
-            for (let i = 0; i < 5; i++) {
-                let newLi = document.createElement("li");
-                newLi.appendChild(document.createTextNode(topGlobal[i].from_abbr + " → " + topGlobal[i].to_abbr + " | " + topGlobal[i].population.toLocaleString()));
-                outboundList.appendChild(newLi);
-            }
+            const topGlobal = [...flows].sort((a, b) => b.population - a.population).slice(0, 10);
 
-            for (let j = 0; j < 5; j++) {
-                let newLi = document.createElement("li");
-                newLi.appendChild(document.createTextNode(leastGlobal[j].from_abbr + " → " + leastGlobal[j].to_abbr + " | " + leastGlobal[j].population.toLocaleString()));
-                inboundList.appendChild(newLi);
-            }
+      if (isMap2) {
+        hideTooltip();
+        if (tooltip) tooltip.style.display = "none";
+        const outboundList = document.getElementById("outboundList");
+        if (outboundList) {
+          outboundList.innerHTML = "";
+          for (const corridor of topGlobal) {
+            const item = document.createElement("li");
+            item.textContent = `${corridor.from_abbr} -> ${corridor.to_abbr} | ${corridor.population.toLocaleString()}`;
+            outboundList.appendChild(item);
+          }
         }
-         
-         
-
-
-
-
-
-
+        addTopCorridorLayerAndMarkers(map, topGlobal);
+      }
 
       const idx = buildFlowIndex(flows);
-      console.log(idx)
+
       let currentHoveredState = null;
 
       const overlay = new deck.MapboxOverlay({
@@ -1092,7 +1591,7 @@ console.table( topGlobal[0].from_abbr + "->" + topGlobal[0].to_abbr + topGlobal[
       };
 
       const createColoredLayer = (data, id, isOutbound, isOutboundFlow) => {
-        console.log(data)
+
         return new deck.ArcLayer({
           id,
           data,
@@ -1119,7 +1618,7 @@ console.table( topGlobal[0].from_abbr + "->" + topGlobal[0].to_abbr + topGlobal[
           new deck.GeoJsonLayer({
             id: "states-fill",
             data: statesGeo,
-            pickable: true,
+            pickable: !isMap2,
             stroked: true,
             filled: true,
             getFillColor: [0, 0, 0, 0],
@@ -1127,6 +1626,7 @@ console.table( topGlobal[0].from_abbr + "->" + topGlobal[0].to_abbr + topGlobal[
             lineWidthMinPixels: 0.5,
 
             onHover: ({object, x, y}) => {
+              if (isMap2) return;
               if (!object) {
                 if (currentHoveredState !== null) {
                   currentHoveredState = null;
@@ -1222,13 +1722,61 @@ const initialMap = new mapboxgl.Map({
 
 const initialMapSection = document.querySelector(".mapSlides");
 let initialMapTriggerTop = 0;
+const INITIAL_STAGE_COORD_A = [-121.917849, 36.621067];
+const INITIAL_STAGE_COORD_B = [-120.094293, 48.025005];
+const INITIAL_STAGE_RING_SOURCE_ID = "initial-stage-ring-source";
+const INITIAL_STAGE_RING_LAYER_ID = "initial-stage-ring-layer";
+const FINAL_STAGE_ARCS_SOURCE_ID = "final-stage-arcs-source";
+const FINAL_STAGE_ARCS_LAYER_ID = "final-stage-arcs-layer";
+const FINAL_STAGE_COORDS = [
+  [-97.922211, 39.381266],
+  [78.476681,
+      22.199166],
+  [134.489563, -25.734968],
+];
 const initialMapViews = {
   stage1: { center: [-98.5795, 39.8283], zoom: 3.3 },
-  stage2: { center: [-98.5795, 39.8283], zoom: .05 }
+  stage2: { center: [0,0], zoom: .01 }
 };
 let initialMapStartView = null;
 let initialMapStage = 0;
 let initialMapScrollRaf = null;
+let initialStageMarkerA = null;
+let initialStageMarkerB = null;
+let finalStageMarkers = [];
+
+function setInitialStageMarkerVisibility(stage) {
+  const setVisible = (marker, isVisible) => {
+    if (!marker) return;
+    const markerEl = marker.getElement();
+    if (!markerEl) return;
+    markerEl.classList.toggle("is-visible", isVisible);
+    markerEl.style.display = isVisible ? "block" : "none";
+  };
+
+  // Stage 0: first marker only
+  setVisible(initialStageMarkerA, stage === 0 || stage === 1);
+  // Stage 1: keep first marker and add second marker
+  setVisible(initialStageMarkerB, stage === 1);
+  // Stage 2 (final): hide first two and show final three markers
+  finalStageMarkers.forEach((marker) => setVisible(marker, stage === 2));
+
+  if (initialMap && initialMap.getLayer(INITIAL_STAGE_RING_LAYER_ID)) {
+    initialMap.setLayoutProperty(
+      INITIAL_STAGE_RING_LAYER_ID,
+      "visibility",
+      stage === 1 ? "visible" : "none"
+    );
+  }
+
+  if (initialMap && initialMap.getLayer(FINAL_STAGE_ARCS_LAYER_ID)) {
+    initialMap.setLayoutProperty(
+      FINAL_STAGE_ARCS_LAYER_ID,
+      "visibility",
+      stage === 2 ? "visible" : "none"
+    );
+  }
+}
 
 function refreshInitialMapTrigger() {
   if (!initialMapSection) return;
@@ -1260,22 +1808,145 @@ initialMap.on('load', () => {
       initialMap.setLayoutProperty(layer.id, 'visibility', 'none');
     }
   });
+
+  initialStageMarkerA = new mapboxgl.Marker({
+    element: createInitMapStageMarkerElement("a"),
+    anchor: "center"
+  })
+    .setLngLat(INITIAL_STAGE_COORD_A)
+    .addTo(initialMap);
+
+  initialStageMarkerB = new mapboxgl.Marker({
+    element: createInitMapStageMarkerElement("b"),
+    anchor: "center"
+  })
+    .setLngLat(INITIAL_STAGE_COORD_B)
+    .addTo(initialMap);
+
+  finalStageMarkers = FINAL_STAGE_COORDS.map((coord, index) =>
+    new mapboxgl.Marker({
+      element: createInitMapStageMarkerElement(`final-${index + 1}`),
+      anchor: "center"
+    })
+      .setLngLat(coord)
+      .addTo(initialMap)
+  );
+
+  const stageRingCoords = buildCircleThroughTwoPoints(
+    INITIAL_STAGE_COORD_A,
+    INITIAL_STAGE_COORD_B
+  );
+
+  initialMap.addSource(INITIAL_STAGE_RING_SOURCE_ID, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: stageRingCoords
+          }
+        }
+      ]
+    }
+  });
+
+  initialMap.addLayer({
+    id: INITIAL_STAGE_RING_LAYER_ID,
+    type: "line",
+    source: INITIAL_STAGE_RING_SOURCE_ID,
+    layout: {
+      "line-cap": "round",
+      "line-join": "round",
+      visibility: "none"
+    },
+    paint: {
+      "line-color": "#333333",
+      "line-width": 3,
+      "line-dasharray": [0.01, 2.2],
+      "line-opacity": 0.95
+    }
+  });
+
+  startInitialStageRingAnimation(
+    initialMap,
+    INITIAL_STAGE_RING_SOURCE_ID,
+    stageRingCoords,
+    () => initialMapStage
+  );
+
+  const finalA = FINAL_STAGE_COORDS[0];
+  const finalB = FINAL_STAGE_COORDS[1];
+  const finalC = FINAL_STAGE_COORDS[2];
+  const finalArcFeatures = [
+    {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: buildSemicircleBetweenPoints(finalA, finalB, true, 120, 1).slice().reverse()
+      }
+    },
+    {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: buildSemicircleBetweenPoints(finalB, finalC, true, 120, 1).slice().reverse()
+      }
+    },
+    {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: buildSemicircleBetweenPoints(finalA, finalC, false, 120, 1)
+      }
+    }
+  ];
+
+  initialMap.addSource(FINAL_STAGE_ARCS_SOURCE_ID, {
+    type: "geojson",
+    lineMetrics: true,
+    data: {
+      type: "FeatureCollection",
+      features: finalArcFeatures
+    }
+  });
+
+  initialMap.addLayer({
+    id: FINAL_STAGE_ARCS_LAYER_ID,
+    type: "line",
+    source: FINAL_STAGE_ARCS_SOURCE_ID,
+    layout: {
+      "line-cap": "round",
+      "line-join": "round",
+      visibility: "none"
+    },
+    paint: {
+      "line-width": 3,
+      "line-opacity": 0.95,
+      "line-color": "#333333"
+    }
+  });
+
+  startFinalStageArcAnimation(
+    initialMap,
+    FINAL_STAGE_ARCS_SOURCE_ID,
+    finalArcFeatures.map((feature) => feature.geometry.coordinates),
+    () => initialMapStage
+  );
+
+  setInitialStageMarkerVisibility(initialMapStage);
 });
 
 let circleStage = -1;
 let circleTl = null;
 
-/**
- * Animates the init-map circles using transforms:
- * - moves the whole container with x/y (instead of left/top)
- * - moves each circle independently by moving its wrapper (.wrapA / .wrapB)
- *
- * Expected DOM:
- * <div class="mapCircles">
- *   <div class="circleWrap wrapA"><svg>...</svg></div>
- *   <div class="circleWrap wrapB"><svg>...</svg></div>
- * </div>
- */
+ 
 function animateInitCircles(stage) {
   if (stage === circleStage) return;
   circleStage = stage;
@@ -1290,7 +1961,6 @@ const b = document.querySelector(".mapCircles .wrap2 circle");
   if (!wrap || !wrapA || !wrapB || !a || !b) return;
 
   if (circleTl) circleTl.kill();
-
   // Make sure transforms behave consistently
   gsap.set([wrap, wrapA, wrapB], { transformOrigin: "50% 50%" });
   gsap.set([a, b], { transformOrigin: "50% 50%" });
@@ -1359,6 +2029,7 @@ function updateInitialMapOnScroll() {
   if (nextStage === initialMapStage) return;
   initialMapStage = nextStage;
   animateInitCircles(nextStage);
+  setInitialStageMarkerVisibility(nextStage);
   const targetView =
     nextStage === 2
       ? initialMapViews.stage2
@@ -1528,3 +2199,9 @@ scheduleInitialMapScrollUpdate();
 </body>
 </html>
  
+
+
+
+
+
+

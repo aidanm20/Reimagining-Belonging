@@ -10,6 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const slide2 = document.querySelector(".slide2");
   const slide6 = document.querySelector(".slide6");
   const slide11 = document.querySelector(".slide11");
+  const slide15 = document.querySelector(".slide15");
   const slide12 = document.querySelector(".slide12");
   const slide16 = document.querySelector(".slide16");
   const slide24 = document.querySelector(".slide24");
@@ -207,6 +208,17 @@ window.addEventListener("load", () => {
       { threshold: [0.3] }
     );
     slide24Observer.observe(slide24);
+  }
+
+  if (slide15 && slide16) {
+    const mapSwapObserver = new IntersectionObserver(
+      ([entry]) => {
+        const showMap2 = entry.isIntersecting && entry.intersectionRatio >= 0.35;
+        document.body.classList.toggle("map2-active", showMap2);
+      },
+      { threshold: [0, 0.35, 0.6] }
+    );
+    mapSwapObserver.observe(slide16);
   }
 
   let activeOverlaySlide = null;

@@ -294,9 +294,29 @@
 
 .slide15.is-visible .mapWrap,
 .slide16.is-visible .mapWrap {
-  pointer-events: auto;
   opacity: 1;
   visibility: visible;
+}
+
+.slide16.is-visible .mapWrap {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.slide15.is-visible .mapWrap {
+  pointer-events: auto;
+  z-index: 3;
+}
+
+body.map2-active .slide15.is-visible .mapWrap {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.map2-active .slide16.is-visible .mapWrap {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .slide16.map-fade .mapWrap {
@@ -838,6 +858,52 @@ p {
   width: 100%;
   height: 100%;
   background-color: #E5DCCF;
+}
+
+.map2-svg-marker {
+  --marker-scale: 1;
+  width: clamp(12px, 1.4vw, 22px);
+  height: clamp(12px, 1.4vw, 22px);
+  transform: translate(-50%, -50%) scale(var(--marker-scale));
+  transform-origin: center;
+}
+
+.map2-svg-marker svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.map2-svg-marker .marker-core {
+  fill: #9f4f2e;
+  opacity: 0.95;
+}
+
+.map2-svg-marker .marker-ring {
+  fill: none;
+  stroke: #c4a448;
+  stroke-width: 2.2;
+  opacity: 0.85;
+}
+
+.initmap-stage-marker {
+  width: clamp(37px, 5vw, 73px);
+  height: clamp(37px, 5vw, 73px);
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.initmap-stage-marker.is-visible {
+  opacity: 1;
+}
+
+.initmap-stage-marker svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .tooltip {
