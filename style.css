@@ -1053,7 +1053,30 @@ p {
   z-index: 10;
 }
 
+.slide17 .whiteBehindSVG2 {
+  position: absolute;
+  top: var(--slide17-circle-top, 29vh);
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--slide17-circle-size, 25vw);
+  height: var(--slide17-circle-size, 25vw);
+  
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9;
+}
+
 .slide17 .svgContainer2 svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.slide17 .whiteBehindSVG2 svg {
   width: 100%;
   height: 100%;
   display: block;
@@ -1081,6 +1104,7 @@ p {
   pointer-events: none;
   z-index: 30;
   white-space: nowrap;
+  transition: transform 0.3s ease-in-out;
 }
 
 /* Reveal images */
@@ -1681,6 +1705,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 
 .slide25 .imgContainer3 {
@@ -1692,6 +1717,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 
 .slide25 .imgContainer4 {
@@ -1703,6 +1729,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 .slide25 .imgContainer5 {
   position: fixed;
@@ -1713,6 +1740,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 
 .slide25 .imgContainer6 {
@@ -1724,6 +1752,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 
 .slide25 .imgContainer7 {
@@ -1735,6 +1764,7 @@ body.slide25-active .slide24SVGContainer object {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
+  background-color: white;
 }
 
 .slide25 .imgContainer,
@@ -2201,3 +2231,16 @@ body.slide25-active .slide25 .imgContainer7 {
 }
 
 #leftText {font-style: italic; font-size: 14px; font-family:'Inter', sans-serif; color: #f2efe7;}
+
+.top-corridor-lines {
+  stroke-dasharray: 50; 
+      stroke-dashoffset: 50;
+
+     animation: move 2s linear infinite; 
+}
+
+@keyframes move {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}

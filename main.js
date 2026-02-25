@@ -1065,3 +1065,17 @@ if (window.gsap && window.ScrollTrigger && orbs && leftOrb && rightOrb && lineGr
   }
 }
  
+
+const trigger = document.querySelector('.frontCirc');
+const moved = document.querySelector('.backCirc');
+const moveLabel = document.querySelector('.belongingLabel')
+
+trigger.addEventListener('mouseover', () => {
+    moved.style.transform = 'translate(20px, 20px)';
+    moveLabel.style.transform = 'translate(calc(-50% - 40px), -50%)';
+});
+
+trigger.addEventListener('mouseout', () => {
+    moved.style.transform = 'translate(0,0)';
+    moveLabel.style.transform = 'translate(-50%, -50%)';
+});

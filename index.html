@@ -272,7 +272,7 @@
 
   <div class="hoverGroup">
     <div class="svgContainer2">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg class="frontCirc" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="Gradient2" x1="0" x2="1" y1="0" y2="1">
             <stop offset="50%" stop-color="#333333" />
@@ -283,6 +283,32 @@
         <circle cx="50" cy="50" r="40" fill="url(#Gradient2)" />
       </svg>
     </div>
+
+    <div class="whiteBehindSVG2">
+        <svg class="backCirc" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="40" fill='#FFFFFF' />
+        </svg>
+    </div>
+
+    <style>
+    .frontCirc {
+        /* Set a smooth transition for transform property */
+        transition: transform 0.3s ease-in-out;
+    }
+    .frontCirc:hover {
+        /* Move the SVG up by 5 pixels on hover */
+    
+        transform: translateX(-40px);
+    }
+
+    .backCirc {
+        transition: transform 0.3s ease-in-out;
+    }
+    .backCirc:hover {
+          transform: translate(30px, 30px)
+      
+    }
+    </style>
 
     <div class="belongingLabel">Belonging is...</div>
 
@@ -809,7 +835,7 @@ time I went home, I felt a bit sad.”
             <img src="./images/idealHome/06.png" alt="02"  >
         </div>
         <div class="imgContainer7">
-            <img src="./images/idealHome/07.jpg" alt="02"  >
+            <img src="./images/idealHome/07.png" alt="02"  >
         </div>
 
         <div class="popWinContainer1 hidden hide-scrollbar">
@@ -855,7 +881,7 @@ time I went home, I felt a bit sad.”
         </div>
 
         <div class="popWinContainer7 hidden hide-scrollbar">
-            <img src="./images/idealHome/07.jpg" style="height: 100%; padding: 50px;" alt="02">
+            <img src="./images/idealHome/07.png" style="height: 100%; padding: 50px;" alt="02">
             <object data="./svg/x.svg" type="image/svg+xml" class="closeButton"  style="cursor: pointer;"></object> 
             <div class="popWinHeader">Cave </div>
             <div class="popWinDesc">FY’s ideal home drawing presents separate cave like homes set in nature, surrounded by a walkable mix of shared amenities including a central common space, reinforcing closeness, warmth, and everyday communal life.</div>
@@ -978,12 +1004,17 @@ function buildFlowIndex(flows) {
 
 function createMap2MarkerElement(scale = 1) {
   const marker = document.createElement("div");
-  marker.className = "map2-svg-marker";
-  marker.style.setProperty("--marker-scale", String(scale));
+  marker.className = "initmap-stage-marker";
+  const gradientId = `GradientInitMap`;
   marker.innerHTML = `
-    <svg viewBox="0 0 40 40" aria-hidden="true">
-      <circle class="marker-core" cx="20" cy="20" r="8"></circle>
-      <circle class="marker-ring" cx="20" cy="20" r="12"></circle>
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="${gradientId}" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="50%" stop-color="#333333" />
+          <stop offset="100%" stop-color="transparent" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="40" fill="url(#${gradientId})" />
     </svg>
   `;
   return marker;
@@ -1344,74 +1375,91 @@ function interpolateLngLat(a, b, t) {
   ];
 }
 
-function buildCorridorSegments(topGlobal) {
-  const segmentSpacingKm = 80;
-  const segmentLengthKm = 20;
-  const features = [];
+function startTopCorridorOffsetAnimation(map, sourceId, topGlobal) {
+  const segmentLengthMeters = 80000;
+  const gapLengthMeters = 180000;
+  const patternLengthMeters = segmentLengthMeters + gapLengthMeters;
+  const speedMetersPerSecond = 70000;
 
-  topGlobal.forEach((flow, corridorIndex) => {
-    const start = [flow.from_lon, flow.from_lat];
-    const end = [flow.to_lon, flow.to_lat];
-    const totalKm = Math.max(1, haversineKm(start, end));
-    const segmentCount = Math.max(1, Math.floor(totalKm / segmentSpacingKm));
+  const prepared = topGlobal
+    .map((flow, i) => {
+      const startM = lonLatToMercatorMeters([flow.from_lon, flow.from_lat]);
+      const endM = lonLatToMercatorMeters([flow.to_lon, flow.to_lat]);
+      const dx = endM[0] - startM[0];
+      const dy = endM[1] - startM[1];
+      const totalLength = Math.hypot(dx, dy);
+      if (!Number.isFinite(totalLength) || totalLength <= 1) return null;
+      return { rank: i + 1, startM, dx, dy, totalLength };
+    })
+    .filter(Boolean);
 
-    for (let segIndex = 0; segIndex <= segmentCount; segIndex += 1) {
-      const startKm = segIndex * segmentSpacingKm;
-      if (startKm > totalKm) break;
-      const endKm = Math.min(startKm + segmentLengthKm, totalKm);
-      const t0 = Math.min(1, startKm / totalKm);
-      const t1 = Math.min(1, endKm / totalKm);
+  const interpolateAt = (corridor, distance) => {
+    const clamped = Math.max(0, Math.min(corridor.totalLength, distance));
+    const t = clamped / corridor.totalLength;
+    const pointM = [
+      corridor.startM[0] + corridor.dx * t,
+      corridor.startM[1] + corridor.dy * t
+    ];
+    return mercatorMetersToLonLat(pointM);
+  };
 
-      if (t1 <= t0) continue;
+  const buildAnimatedData = (offsetMeters) => {
+    const wrappedOffset =
+      ((offsetMeters % patternLengthMeters) + patternLengthMeters) % patternLengthMeters;
+    const features = prepared
+      .map((corridor) => {
+        const segments = [];
+        let start = -wrappedOffset;
 
-      features.push({
-        type: "Feature",
-        properties: {
-          rank: corridorIndex + 1,
-          corridorIndex,
-          segIndex
-        },
-        geometry: {
-          type: "LineString",
-          coordinates: [
-            interpolateLngLat(start, end, t0),
-            interpolateLngLat(start, end, t1)
-          ]
+        while (start < corridor.totalLength) {
+          const segStart = Math.max(0, start);
+          const segEnd = Math.min(corridor.totalLength, start + segmentLengthMeters);
+          if (segEnd - segStart > 1) {
+            segments.push([
+              interpolateAt(corridor, segStart),
+              interpolateAt(corridor, segEnd)
+            ]);
+          }
+          start += patternLengthMeters;
         }
-      });
-    }
-  });
 
-  return features;
-}
+        if (!segments.length) return null;
+        return {
+          type: "Feature",
+          properties: { rank: corridor.rank },
+          geometry: {
+            type: "MultiLineString",
+            coordinates: segments
+          }
+        };
+      })
+      .filter(Boolean);
 
-function buildSegmentColorExpression(phase) {
-  const cycle = 5;
-  const litSegments = 2;
-  return [
-    "case",
-    ["<", ["%", ["+", ["get", "segIndex"], phase], cycle], litSegments],
-    "#c4a448",
-    "#8f7742"
-  ];
-}
+    return {
+      type: "FeatureCollection",
+      features
+    };
+  };
 
-function startCorridorFlowAnimation(map, layerId) {
   let rafId = null;
-  let last = 0;
-  const cycle = 5;
-  let phase = 0;
+  let lastTs = 0;
+  let offsetMeters = 0;
 
   const tick = (ts) => {
-    if (!map.getLayer(layerId)) return;
-    if (ts - last >= 130) {
-      last = ts;
-      phase = (phase - 1 + cycle) % cycle;
-      map.setPaintProperty(layerId, "line-color", buildSegmentColorExpression(phase));
-    }
+    const source = map.getSource(sourceId);
+    if (!source) return;
+    if (!lastTs) lastTs = ts;
+    const dt = Math.min(0.05, Math.max(0, (ts - lastTs) / 1000));
+    lastTs = ts;
+    offsetMeters -= dt * speedMetersPerSecond;
+    source.setData(buildAnimatedData(offsetMeters));
     rafId = requestAnimationFrame(tick);
   };
 
+  const source = map.getSource(sourceId);
+  if (source) {
+    source.setData(buildAnimatedData(0));
+  }
   rafId = requestAnimationFrame(tick);
   map.on("remove", () => {
     if (rafId !== null) cancelAnimationFrame(rafId);
@@ -1421,13 +1469,12 @@ function startCorridorFlowAnimation(map, layerId) {
 function addTopCorridorLayerAndMarkers(map, topGlobal) {
   const sourceId = "top-corridor-lines";
   const layerId = "top-corridor-lines-dotted";
-  const features = buildCorridorSegments(topGlobal);
 
   map.addSource(sourceId, {
     type: "geojson",
     data: {
       type: "FeatureCollection",
-      features
+      features: []
     }
   });
 
@@ -1440,7 +1487,6 @@ function addTopCorridorLayerAndMarkers(map, topGlobal) {
       "line-join": "round"
     },
     paint: {
-      "line-color": "#c4a448",
       "line-opacity": 1,
       "line-width": [
         "interpolate",
@@ -1451,6 +1497,8 @@ function addTopCorridorLayerAndMarkers(map, topGlobal) {
       ]
     }
   });
+
+  startTopCorridorOffsetAnimation(map, sourceId, topGlobal);
 
   const nodeWeights = new Map();
   for (const flow of topGlobal) {
@@ -1798,10 +1846,9 @@ initialMap.on('load', () => {
   };
   refreshInitialMapTrigger();
 
-  // Example for a specific layer ID
-  initialMap.setLayoutProperty('place-city-sm', 'visibility', 'none');
  
-  // Example to hide all symbol layers (which often include most labels)
+  initialMap.setLayoutProperty('place-city-sm', 'visibility', 'none');
+  
   
   initialMap.getStyle().layers.forEach((layer) => {
     if (layer.type === 'symbol' && layer.layout.hasOwnProperty('text-field')) {
@@ -2199,6 +2246,7 @@ scheduleInitialMapScrollUpdate();
 </body>
 </html>
  
+
 
 
 
