@@ -320,6 +320,66 @@ window.addEventListener("load", () => {
     const thresholds = [0, 0.2, 0.4, 0.6, 0.8, 1];
     let slide12Ratio = 0;
 
+    const getVisibleRatio = (el) => {
+      if (!el) return 0;
+      const rect = el.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const visibleTop = Math.max(rect.top, 0);
+      const visibleBottom = Math.min(rect.bottom, viewportHeight);
+      const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+      return rect.height > 0 ? visibleHeight / rect.height : 0;
+    };
+
+    const updatePhoneOverlay = () => {
+      let activeSlide = null;
+      let maxRatio = 0;
+
+      overlaySlides.forEach((slide) => {
+        const ratio = getVisibleRatio(slide);
+        overlayRatios.set(slide, ratio);
+        if (ratio > maxRatio) {
+          maxRatio = ratio;
+          activeSlide = slide;
+        }
+      });
+
+      slide12Ratio = getVisibleRatio(slide12);
+
+      const slide1Ratio = getVisibleRatio(slide1);
+      isSlide1Visible = slide1Ratio > 0;
+      const isOverlayVisible = maxRatio > 0 && !isSlide1Visible && slide12Ratio === 0;
+      const isDark = isOverlayVisible && activeSlide && darkSet.has(activeSlide);
+      activeOverlaySlide = activeSlide;
+      syncSlide11Circle();
+
+      phoneOverlay.classList.toggle("is-visible", isOverlayVisible);
+      document.body.classList.toggle("phone-circle-visible", isOverlayVisible);
+      phoneOverlay.classList.toggle("is-dark-circle", isDark);
+      if (phone) {
+        // Keep the phone hidden when the overlay fades out to avoid a flash.
+        phone.classList.toggle("hidden", isDark || !isOverlayVisible);
+        if (activeSlide) {
+          const phoneIndex = phoneSlides.indexOf(activeSlide);
+          if (phoneIndex >= 0) {
+            const nextBg = phoneBgUrls[phoneIndex % phoneBgUrls.length];
+            if (nextBg !== lastPhoneBg) {
+              if (phoneFadeTimeout) {
+                clearTimeout(phoneFadeTimeout);
+              }
+              phone.classList.add("is-fading");
+              phoneFadeTimeout = setTimeout(() => {
+                phone.style.backgroundImage = `url("${nextBg}")`;
+                lastPhoneBg = nextBg;
+                requestAnimationFrame(() => {
+                  phone.classList.remove("is-fading");
+                });
+              }, 150);
+            }
+          }
+        }
+      }
+    };
+
     const overlayObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -330,47 +390,7 @@ window.addEventListener("load", () => {
           overlayRatios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
         });
 
-        let activeSlide = null;
-        let maxRatio = 0;
-
-        overlayRatios.forEach((ratio, slide) => {
-          if (ratio > maxRatio) {
-            maxRatio = ratio;
-            activeSlide = slide;
-          }
-        });
-
-        const isOverlayVisible = maxRatio > 0 && !isSlide1Visible && slide12Ratio === 0;
-        const isDark = isOverlayVisible && activeSlide && darkSet.has(activeSlide);
-        activeOverlaySlide = activeSlide;
-        syncSlide11Circle();
-
-        phoneOverlay.classList.toggle("is-visible", isOverlayVisible);
-        document.body.classList.toggle("phone-circle-visible", isOverlayVisible);
-        phoneOverlay.classList.toggle("is-dark-circle", isDark);
-        if (phone) {
-          // Keep the phone hidden when the overlay fades out to avoid a flash.
-          phone.classList.toggle("hidden", isDark || !isOverlayVisible);
-          if (activeSlide) {
-            const phoneIndex = phoneSlides.indexOf(activeSlide);
-            if (phoneIndex >= 0) {
-              const nextBg = phoneBgUrls[phoneIndex % phoneBgUrls.length];
-              if (nextBg !== lastPhoneBg) {
-                if (phoneFadeTimeout) {
-                  clearTimeout(phoneFadeTimeout);
-                }
-                phone.classList.add("is-fading");
-                phoneFadeTimeout = setTimeout(() => {
-                  phone.style.backgroundImage = `url("${nextBg}")`;
-                  lastPhoneBg = nextBg;
-                  requestAnimationFrame(() => {
-                    phone.classList.remove("is-fading");
-                  });
-                }, 150);
-              }
-            }
-          }
-        }
+        updatePhoneOverlay();
       },
       { threshold: thresholds }
     );
@@ -379,6 +399,10 @@ window.addEventListener("load", () => {
     if (slide12) {
       overlayObserver.observe(slide12);
     }
+    window.addEventListener("scroll", updatePhoneOverlay, { passive: true });
+    window.addEventListener("resize", updatePhoneOverlay);
+    window.addEventListener("intro-state-refresh", updatePhoneOverlay);
+    updatePhoneOverlay();
   }
 
   const gradientOrb = document.querySelector(".phoneOrbGradient");

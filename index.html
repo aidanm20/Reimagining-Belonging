@@ -2055,7 +2055,7 @@ const b = document.querySelector(".mapCircles .wrap2 circle");
 
 function updateInitialMapOnScroll() {
   if (!initialMapStartView) return;
-  const stage1Threshold = initialMapTriggerTop + window.innerHeight;
+  const stage1Threshold = initialMapTriggerTop + window.innerHeight - 300;
   const stage2Threshold = initialMapTriggerTop + window.innerHeight * 2 - 80    ;
 
   let nextStage = 0;
@@ -2205,6 +2205,7 @@ scheduleInitialMapScrollUpdate();
             const refreshAfterIntro = () => {
                 window.dispatchEvent(new Event("scroll"));
                 window.dispatchEvent(new Event("resize"));
+                window.dispatchEvent(new Event("intro-state-refresh"));
             };
 
             window.intro = function intro() {

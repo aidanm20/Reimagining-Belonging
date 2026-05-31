@@ -438,8 +438,8 @@ body.force-scroll.popup-open::before {
     background-color: #e5dccf;
   border: none;
   color: #9f4f2e;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
  
   text-align: center;
   text-decoration: none;
@@ -1160,7 +1160,7 @@ p {
   --circle-yellow: clamp(130px, 12vw, 190px);
   --circle-red: clamp(130px, 12vw, 190px);
   --circle-blue: clamp(130px, 12vw, 190px);
-  --slide18-content-y: 39vh;
+  --slide18-content-y: calc(39vh - 30px);
   --slide18-image-offset: clamp(72px, 8vw, 150px);
   --slide18-left-offset: clamp(82px, 9vw, 165px);
   --slide18-image-width: clamp(220px, 28vw, 460px);
@@ -1169,7 +1169,7 @@ p {
   --slide18-left-font-size: clamp(6.8px, 0.36vw + 0.16vh, 9.6px);
   --slide18-left-line-height: 1.28;
   --slide18-circle-top: calc(50vh + (var(--circle-green) * 0.0625));
-  --slide18-left-top: clamp(18vh, 22vh, 25vh);
+  --slide18-left-top: calc(clamp(18vh, 22vh, 25vh) - 30px);
 }
 
 .slide18Media {
@@ -1194,6 +1194,8 @@ p {
   position: absolute;
   inset: 0;
 }
+
+ 
 
 .greenText,
 .yellowText,
@@ -1241,7 +1243,7 @@ p {
     --slide18-image-max-height: min(24vh, 230px);
     --slide18-left-width: clamp(170px, 28vw, 300px);
     --slide18-left-font-size: clamp(6.4px, 0.72vw, 8.8px);
-    --slide18-left-top: clamp(18vh, 21vh, 24vh);
+    --slide18-left-top: calc(clamp(18vh, 21vh, 24vh) - 30px);
   }
 }
 
